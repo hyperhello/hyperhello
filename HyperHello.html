@@ -40,15 +40,18 @@
 
 body,html 
 { 
-	min-height: 100%; margin: 0px; overflow: hidden; font-family: system-ui; 
+	min-height: 100%; margin: 0px; overflow: hidden; font-family: system-ui, "San Francisco"; 
 	background: var(--background-color);
 	color: var(--text-color);
 	-webkit-user-select: none; -moz-user-select: -moz-none; 
+	background: var(--screen-color); 
+	box-shadow: inset 0px 0px 4px var(--background-color);
 }
 body
 {
 	background-image: radial-gradient(var(--toolbar-color) 1px, transparent 0); /* there's so many nice backgrounds to choose from */
 	background-size: 48px 48px;
+
 }
 body.quit { cursor: progress !important; opacity: 0.2; }
 body.quit * { pointer-events: none; }
@@ -97,8 +100,16 @@ body[data-hh-tool="type"] #contentarea
 	background-image: linear-gradient(to right, highlight 50%, highlight 50%), linear-gradient(to right, highlight 50%, highlight 50%), linear-gradient(to bottom, highlight 50%, highlight 50%), linear-gradient(to bottom, highlight 50%, highlight 50%);
 }
 
-body[data-hh-tool="edit"] #contentarea button:hover ,
-body[data-hh-tool="edit"] #contentarea div:hover { outline: thin dotted gray; }
+body[data-hh-tool="paint"] #contenttd { cursor: none; }
+body[data-hh-tool="paint"] #contentareacanvas { pointer-events: auto; z-index: 998; }
+body[data-hh-tool="paint"] #contentareacanvas:hover {  }
+body[data-hh-tool="paint"] * { touch-action: none; }
+
+body[data-hh-tool="edit"] #contenttd { cursor: crosshair; }
+body[data-hh-tool="edit"] #contentarea button { position: relative; }
+body[data-hh-tool="edit"] #contentarea button:after { position: absolute; content: "Hello"; left: 0px; top: 0px; right: 0px; bottom: 0px; cursor: pointer; }
+body[data-hh-tool="edit"] #contentarea button:hover,
+body[data-hh-tool="edit"] #contentarea div:hover { outline: thin dashed gray; }
 body[data-hh-tool="edit"] #contentarea
 {
 	cursor: crosshair;
@@ -108,7 +119,8 @@ body[data-hh-tool="edit"] #contentarea
 	background-image: linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%);
 	animation: hh-marching-ants 3.5s linear infinite running reverse;
 }
-body[data-hh-tool=edit] #contentarea * { touch-action: none; }
+body[data-hh-tool="edit"] #contentareacanvas { touch-action: none; }
+body[data-hh-tool="edit"] #contentareacanvas { pointer-events: auto; z-index: 998; }
 
 /*body[data-hh-tool="paint"] #contentarea 
 {
@@ -121,11 +133,6 @@ body[data-hh-tool=edit] #contentarea * { touch-action: none; }
 		linear-gradient(to bottom, var(--screen-color) 50%, var(--screen-color) 50%),
 		 linear-gradient(to bottom, var(--screen-color) 50%, var(--screen-color) 50%);
 }*/
-body { background: var(--screen-color); box-shadow: inset 0px 0px 4px var(--background-color); }
-body[data-hh-tool="paint"] #contentarea { cursor: none; }
-body[data-hh-tool="paint"] #contentareacanvas { pointer-events: auto; z-index: 998; xbox-shadow: inset 0px 0px 2px var(--screen-color); }
-body[data-hh-tool="paint"] #contentareacanvas:hover {  }
-body[data-hh-tool="paint"] * { touch-action: none; }
 
 @keyframes hh-marching-ants
 {
@@ -148,25 +155,37 @@ body[data-hh-tool=cross] #toolbartr #cross,
 body[data-hh-crosshair=true] #toolbartr #cross,
 body[data-hh-tool=edit] #toolbartr #edit  { background-color: var(--toolbar-glass-color); }
 
+#version { 
+	position: absolute; 
+	right: 2px; 
+	bottom: 2px; 
+	color:var(--toolbar-color); 
+	white-space: pre; 
+	}
+xbody[data-hh-tool=edit] #version
+{
+	color:var(--toolbar-glass-color); 
+
+}
+
 </style>
 
-</head>
 <body> 
 
 <table id=maintable class=absolutefill>
 	<tr height=99%>
-		<td id=contenttd valign=top colspan=6>
-			<code id=version style='position: absolute; right: 2px; bottom: 2px; color:var(--toolbar-glass-color); white-space: pre;'>v0.0.1</code>
+		<td id=contenttd valign=top colspan=5>
+			<code id=version>v0.0.2</code>
+			<canvas id=contentareacanvas class=absolutefill></canvas>
 			<div id=contentarea class=absolutefill>
-				<canvas id=contentareacanvas class=absolutefill></canvas>
 				<div id=contentareainner data-hh-typing style="outline:none;">
 						Welcome to HyperHello. 
 						<br> 
 						<button>New Button</button>
-						<div style="border: medium solid green; border-radius: 6px; color: var(--yellow); float: right;">Floated text</div>
+						<div style="background: white; border: medium solid green; border-radius: 6px; color: var(--yellow); float: right;">Floated text</div>
 						<div style='clear:both;'>Text after clearing the float</div>
 						
-						<div style="border: medium solid green; border-radius: 6px; color: var(--yellow); position: absolute; right: 20px; xwidth: 50px;">Absolute text</div>
+						<div style="background: red; border: medium solid green; border-radius: 6px; color: var(--yellow); position: absolute; right: 20px; xwidth: 50px;">Absolute text</div>
 						Text after the absolute text
 						<div> container: <div>"first subcontained"</div> <div>"subcontained number two"</div> end </div>
 				<div> 
@@ -182,8 +201,25 @@ body[data-hh-tool=edit] #toolbartr #edit  { background-color: var(--toolbar-glas
 		<td id=paint class=settooltoid><img class=darkfilter src=images/stylus.png height=25 draggable=false></td>
 		<td id=edit class=settooltoid><img class=darkfilter src=images/drag.png height=25 draggable=false></td>
 		</span>
-		<td id=home onclick="alert(this.id);"><img class=darkfilter src=images/globe.png height=25 draggable=false></td>
-		<td id=trash onclick="if (confirm('delete storage?')) hh_quit();"><img class=darkfilter src=images/recycle.png height=25 draggable=false></td>
+		<!--td id=home class=toolhasbubble style='position: relative;' 
+			onmousedown="this.querySelector('div').style.display='block';" 
+			onmouseleave="this.querySelector('div').style.display='none';" 
+			onclick="/*alert(this.id);*/">
+			<img class=darkfilter src=images/globe.png height=25 draggable=false>
+		 	<div id=recyclemenu style="display: none; position: absolute; bottom: 100%; min-width: 100%; right: 0px; z-index:999; ">
+				<div style="position:relative;xleft:-1px;xtop:-1px; background: var(--toolbar-color); padding: 4px"><button>Home</button></div>
+			</div>
+		</td!-->
+		<td id=trash class=toolhasbubble style='position: relative;'  
+			onmousedown="if (event.target===this) this.querySelector('div').style.display=(this.querySelector('div').style.display=='block')?'none':'block';" 
+			onmouseleave="this.querySelector('div').style.display='none';">
+			<img class=darkfilter src=images/recycle.png height=25 draggable=false>
+		 	<div id=recyclemenu style="display: none; position: absolute; bottom: 100%; min-width: 100%; right: 0px; z-index:999; ">
+				<div style="position:relative; background: var(--toolbar-color); padding: 4px">
+					<button onclick="if (confirm('delete storage?')) hh_quit();">Recycle</button>
+				</div>
+			</div>
+		</td>
 	</tr>
 </table>
 
@@ -196,14 +232,19 @@ if (localStorage.getItem('html'))
 {
 	document.querySelector('#contentareainner').innerHTML = localStorage.getItem('html');
 }
+if (localStorage.getItem('scroll'))
+{
+	document.querySelector('#contentarea').scrollTop = parseInt(localStorage.getItem('scroll')) || 0;
+}
 document.querySelector('#contentareainner').oninput = function() {
 	localStorage.setItem('html', document.querySelector('#contentareainner').innerHTML);
 }
 
-var hh = { meta: false, shift: false, scrolled: false, mouse: [0,0] };
+var hh = { meta: false, shift: false, scrolled: false, mouse: [0,0], pressure: 0.1, scroll: 0};
 ['touchstart','touchmove','touchend','touchcancel','mousedown','mouseup','dblclick','mouseenter','mousemove','mouseout','scroll','keydown','keypress','keyup','contextmenu'].map(
 	(t) => window.addEventListener(t, hh_event,false)
 	);
+document.querySelector('#contentarea').onscroll = hh_event;	// this is contentarea scroll; window scroll should be banned.
 
 function hh_init()
 {
@@ -225,17 +266,39 @@ function put()
 function hh_event(event)
 {
 	if (hh.quit) return;
+	
 	hh.type = {'touchstart':'mousedown','touchmove':'mousemove','touchend':'mouseup'}[event.type] || event.type;
-	
-	put(hh.type);
-	
-	if (event.clientX !== undefined)
-		hh.mouse = [event.clientX,event.clientY];
-	else if (event.touches && event.touches[0])
-		hh.mouse = [event.touches[0].clientX,event.touches[0].clientY];
+		
+	// mouse is in page coordinates, although I think it should really be in content coordinates
+	if (event.touches && event.touches[0])
+	{
+		hh.mouse = [event.touches[0].pageX, event.touches[0].pageY + hh.scroll];
+		if (typeof event.touches[0]["force"] !== "undefined" && event.touches[0]["force"] > 0)
+			hh.pressure = event.touches[0]["force"]
+		/*touches.innerHTML = `
+			touchType = ${touch.touchType} ${touch.touchType === 'direct' ? '👆' : '✍️'} <br/>
+			radiusX = ${touch.radiusX} <br/>
+			radiusY = ${touch.radiusY} <br/>
+			rotationAngle = ${touch.rotationAngle} <br/>
+			altitudeAngle = ${touch.altitudeAngle} <br/>
+			azimuthAngle = ${touch.azimuthAngle} <br/>
+			`;*/
+	}
+	else if (event.pageX !== undefined)
+	{
+		hh.mouse = [event.pageX,event.pageY /*+ hh.scroll*/];
+		hh.pressure = 0.1;
+	}
+	put (hh.type,hh.mouse,hh.pressure, hh.scroll);	
 		
 	// safari has bugs with metakey, one is the mousemove right after scrolling is always modifiers false
-	if (hh.type == 'scroll') hh.scrolled = true;
+	if (hh.type == 'scroll') 
+	{ 
+		hh.scrolled = true; 
+		window.scrollTop = 0;	// enforcement in this version
+		localStorage.setItem('scroll', (hh.scroll=document.querySelector('#contentarea').scrollTop)); 
+		// would be slick to call mousemove on the canvas to refresh. However we're switching canvas to fixed and having 
+	}
 	if (event.metaKey !== undefined && !hh.scrolled)	
 	{
 		hh.meta = !!event.metaKey;
@@ -246,35 +309,93 @@ function hh_event(event)
 
 	if (hh.type == 'contextmenu' || event.which == 3 || hh.type == 'touchcancel')
 	{
-		if (hh.clickActivity)
+		if (hh.activity)
 		{
-			hh.clickActivity.cancel();
-			hh.clickActivity = null;
+			hh.activity.cancel();
+			hh.activity = null;
 		}
 		return;
 	}
-
-	// support generic hover and click activity which then specializes, it's the best system.
+	
+	// this kind of sucks again, what if the mouse travels in and out during the click, don't want to destroy the previous activity
 	var element = event.srcElement || event.target;
-	function setHover(element)
+	/*if (hh.type == 'mouseenter' || hh.type == 'mousemove' || hh.type == 'mousedown' || hh.type == 'mouseup')
+		setHover(element, (hh.type != 'mouseup') && !!event.which );
+	else if (hh.type == 'mouseout')	// i guess this only really applies when the cursor leaves the window?
+		setHover(null);
+	return;
+
+	function setHover(element, button)
 	{
-		if (hh.hoverElement !== element)
+		if (hh.activity && hh.activity.element !== element)
 		{
-			if (hh.hoverElement)
-				{};//hh.hoverElement.style.background = 'var(--toolbar-glass-color)';
+			// end the activity. no
+			if (hh.activity.button)
+			{
+				hh.activity.button = false;
+				hh.activity.up();
+			}
+			if (hh.activity.hover)
+			{
+				hh.activity.hover = false;
+				hh.activity.out();
+			}
+			hh.activity = null;
 		}
-		if (hh.hoverElement=element)
+		if (!hh.activity && element)
 		{
-			//hh.hoverElement.style.background = '';
+			createActivity(hh.activity={ 
+				element, 
+				hover: false, 
+				button: false, 
+				in() { console.log('in' + this.element) }, 
+				out() { console.log('out' + this.element) }, 
+				down() { console.log('down' + this.element) }, 
+				up() { console.log('up' + this.element) } ,
+				cancel() { console.log('cancel' + this.element) } 
+				});
+			hh.activity.hover = true;
+			hh.activity.in();
+		}
+		if (hh.activity)
+		{
+			if (hh.activity.button != button)
+			{
+				hh.activity.button = button;
+				button ? hh.activity.down() : hh.activity.up();
+			}
+			if (hh.activity.button != button)
+			{
+				hh.activity.button = button;
+				button ? hh.activity.down() : hh.activity.up();
+			}
+		}
+	}
+	function createActivity(activity)
+	{
+		// activity = { element, hover, button, in(), out(), down(), up(), cancel() }
+		if (activity.element === canvas)
+		{
+			var hoverPath;
+			activity.in = function() { 
+				if (!hoverPath)
+					paths.push(hoverPath={ points: [[0,0,1]], 
+						stroke: '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 7)] });
+				hoverPath.points[0] = [hh.mouse[0],hh.mouse[1],Math.log(hh.pressure + 1) * 100];
+				renderCanvas();
+				}
+			activity.out = function() { 
+				paths.pop();
+				hoverPath = null;
+				renderCanvas();
+				}
 		}
 	}
 	
-	// this kind of works but css is way better
-	if (hh.type == 'mouseenter' || hh.type == 'mousemove')
-		setHover(element);
-	else if (hh.type == 'mouseout')
-		setHover(null);
 
+		put(JSON.stringify(hh.activity));
+		return;*/
+		
 	// mousedown 
 //console.log(textcolor.split(''));
 
@@ -282,70 +403,75 @@ function hh_event(event)
 	// if you get antyhing 
 
 	// THIS WORKS. So distill the enable-activate-deactivate-disable templete
-	if (element === canvas)
+	if (element === canvas && hh.tool == 'paint')
 	{
 		// a minimum pressure would be nice so you could just drag the pen across the screen with no weight. start here and then expand to maybe edit tools
 		var wasHovering = paths.length && paths[paths.length-1].hover;
 		var wasButtoning = paths.length && paths[paths.length-1].button;
-		var pressure = 0.1;
-		var x, y;
-		if (event.touches && event.touches[0] && typeof event.touches[0]["force"] !== "undefined") {
-			if (event.touches[0]["force"] > 0) {
-				pressure = event.touches[0]["force"]
-			}
-			x = event.touches[0].pageX;
-			y = event.touches[0].pageY;
-			
-		} else {
-			pressure = 1.0;
-			x = event.pageX;
-			y = event.pageY;
-		}
 
 		// smoothen line width. 
-		var lineWidth = (Math.log(pressure + 1) * 40 * 0.2)
-		var pt = [x,y,lineWidth.toFixed(3)];
+		var pt = [hh.mouse[0],hh.mouse[1],Math.log(hh.pressure + 1.5) * 70 * 0.2];
 		put(pt);
 		if (hh.type == 'mousedown')
 		{
 			// canvas mousedown starts a text color path in button mode.
-			paths.push({ button: true, points: [pt], stroke: null });
-			renderCanvas();
+			paths.push({ button: true, points: [pt], stroke: '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 7)] });
 		}
 		else if (hh.type == 'mouseup' && wasButtoning)
 		{
 			// canvas mouseup closes it.
 			paths[paths.length-1].button = false;
-			renderCanvas();
+			//paths[paths.length-1].points[0][2] = 16;
 			localStorage.setItem('paths', JSON.stringify(paths));
-			
 			// the closure of the path ought to become a commandable object itself
 		}
 		else if (hh.type == 'mouseenter' || (hh.type == 'mousemove' && !wasButtoning && !wasHovering))
 		{
-			paths.push({ hover: true, points: [pt], stroke: null });
-			renderCanvas();
+			paths.push({ hover: true, points: [pt], stroke: '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 7)] });
 		}
 		else if (hh.type == 'mousemove' && wasButtoning)
 		{
 			paths[paths.length-1].points.push(pt);
-			renderCanvas();
+			event.preventDefault();
 		}
 		else if (hh.type == 'mousemove' && wasHovering)
 		{
 			paths[paths.length-1].points[paths[paths.length-1].points.length-1] = pt;
-			renderCanvas();
+			event.preventDefault();
 		}
 		else if (hh.type == 'mouseout' && wasHovering)
 		{
 			paths.pop();
-			renderCanvas();
 		}
 		else if (hh.type == 'keydown' && event.keyCode == 8 && paths.length)
 		{
 			paths.pop();
-			renderCanvas();
 		}
+
+		//requestAnimationFrame(renderCanvas);
+		renderCanvas();
+	}
+	
+	if (element === canvas && hh.tool == 'edit')
+	{
+		if (hh.type == 'mousedown')
+		{
+			// canvas mousedown starts a text color path in button mode.
+			dragSel = [hh.mouse[0],hh.mouse[1],hh.mouse[0],hh.mouse[1]];
+			put(dragSel);
+		}
+		else if (hh.type == 'mouseup')
+		{
+			dragSel = null;
+		}
+		else if (hh.type == 'mousemove' && dragSel)
+		{
+			dragSel[2] = hh.mouse[0];
+			dragSel[3] = hh.mouse[1];
+		}
+
+		//requestAnimationFrame(renderCanvas);
+		renderCanvas();
 	}
 
 	
@@ -363,8 +489,7 @@ function hh_event(event)
 
 function setTool(tool) 
 { 
-	tool=(tool||'user');
-	hh.tool = tool;
+	hh.tool = tool = (tool||'user');
 	document.body.setAttribute('data-hh-tool', tool); 
 	localStorage.setItem('tool',tool); 
 	var hhtyping = document.querySelectorAll('[data-hh-typing]');
@@ -376,8 +501,11 @@ hh_init();
 
 var canvas = document.querySelector('#contentareacanvas'), 
 	dpr = (window.devicePixelRatio || 1), 
-	paths = JSON.parse(localStorage.getItem('paths')) || [ { points: [[10,10,15],[100,100]], stroke: '--green' }, { points: [[10,100,10],[100,10]], stroke: '--blue' } ];
-	
+	dragSel,
+	paths = JSON.parse(localStorage.getItem('paths')) 
+		|| [ { points: [[10,10,15],[100,100],[200,10],[300,100]], stroke: '--green' }, 
+			{ points: [[10,100,10],[100,10],[200,100],[300,10]], stroke: '--blue' } ];
+
 function renderCanvas()
 {
 	var textcolor = String(getComputedStyle(document.documentElement).getPropertyValue('--text-color')).trim();
@@ -392,28 +520,59 @@ function renderCanvas()
 		
 		if (points.length)
 		{
-			var lineWidth = points[0][2] || 8, strokeColor = path.stroke || '--text-color';
+			// draw the color if any inside a larger one
+			
+			var lineWidth = points[0][2] || 8, strokeColor = '--toolbar-color';
 			if (strokeColor[0] == '-')
 				strokeColor = String(getComputedStyle(document.documentElement).getPropertyValue(strokeColor)).trim() || 'gray';
-			ctx.lineWidth = lineWidth;
+			ctx.lineWidth = lineWidth*2;
 			ctx.strokeStyle = strokeColor;
 			ctx.lineJoin = ctx.lineCap = "round";
-			ctx.beginPath();
-			ctx.moveTo((points[0][0]-0.01)*dpr,(points[0][1]-0.01)*dpr);
-			for (var i=(points.length==1) ? 0 : 1; i < points.length; i++)
+			strokePaths();
+			
+			if (path.stroke)
 			{
-				if (points[i][2] !== undefined && points[i][2] != lineWidth)
-					ctx.lineWidth = (lineWidth=points[i][2]);
-				ctx.lineTo(points[i][0] * dpr,points[i][1] * dpr);
-				ctx.quadraticCurveTo(points[i][0] * dpr, points[i][1] * dpr, points[Math.max(i-1,0)][0] * dpr, points[Math.max(i-1,0)][1] * dpr);
-				if (lineWidth >= 0.2) ctx.stroke(); 
-				
-				ctx.beginPath();
-				ctx.moveTo(points[i][0] * dpr,points[i][1] * dpr);
+				strokeColor = path.stroke;
+				if (strokeColor[0] == '-')
+					strokeColor = String(getComputedStyle(document.documentElement).getPropertyValue(strokeColor)).trim() || 'gray';
+				ctx.strokeStyle = strokeColor;
+				ctx.lineWidth = lineWidth;
+				strokePaths();
 			}
-			ctx.stroke(); 
+			
+			function strokePaths()
+			{
+				ctx.beginPath();
+				ctx.moveTo((points[0][0]-0.01)*dpr,(points[0][1]-0.01)*dpr);
+				for (var i=(points.length==1) ? 0 : 1; i < points.length; i++)
+				{
+					if (points[i][2] !== undefined && points[i][2] != lineWidth)
+						ctx.lineWidth = (lineWidth=points[i][2]);
+						
+					ctx.lineTo(points[i][0] * dpr,points[i][1] * dpr);
+					//ctx.quadraticCurveTo(points[i][0] * dpr, points[i][1] * dpr, points[Math.max(i-1,0)][0] * dpr, points[Math.max(i-1,0)][1] * dpr);
+					if (lineWidth >= 0.2) ctx.stroke(); 
+					
+					ctx.beginPath();
+					ctx.moveTo(points[i][0] * dpr,points[i][1] * dpr);
+				}
+				ctx.stroke(); 
+				ctx.closePath();
+			}
+
 		}
 	}
+	
+	if (dragSel)
+	{
+		ctx.strokeStyle = String(getComputedStyle(document.documentElement).getPropertyValue("--border-color")).trim();
+		ctx.lineWidth = dpr;
+		ctx.setLineDash([dpr*2+1,dpr*2+1]);
+		ctx.strokeRect(Math.min(dragSel[0],dragSel[2])*dpr, Math.min(dragSel[1],dragSel[3])*dpr,
+			Math.abs(dragSel[0]-dragSel[2])*dpr, Math.abs(dragSel[1]-dragSel[3])*dpr);
+		ctx.setLineDash([]);
+	}
+
 }
 renderCanvas();
 

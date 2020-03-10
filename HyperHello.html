@@ -1,15 +1,16 @@
 <!-- (c) 2020 by Hypervariety Custom Programming. All rights reserved. !-->
 
 <!DOCTYPE html5>
+<head>
+<meta name="supported-color-schemes" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<html lang=en><head>
-<title>HelloNew</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html lang=en"><head>
+<title>HyperHello</title>
 
 <style>
 :root {
-	color-scheme: light dark;
 	--border-color: black;
 	--background-color: white;
 	--text-color: black;
@@ -40,29 +41,31 @@
 
 body,html 
 { 
-	min-height: 100%; margin: 0px; overflow: hidden; font-family: system-ui, "San Francisco"; 
-	background: var(--background-color);
+	min-height: 100%; margin: 0px; overflow: hidden; font-family: system-ui; 
+	xbackground: var(--background-color);
+	xbackground: var(--screen-color); 
 	color: var(--text-color);
 	-webkit-user-select: none; -moz-user-select: -moz-none; 
-	background: var(--screen-color); 
 	box-shadow: inset 0px 0px 4px var(--background-color);
 }
 body
 {
 	background-image: radial-gradient(var(--toolbar-color) 1px, transparent 0); /* there's so many nice backgrounds to choose from */
 	background-size: 48px 48px;
-
+ 
 }
 body.quit { cursor: progress !important; opacity: 0.2; }
 body.quit * { pointer-events: none; }
 
-[contenteditable] { outline: none; }
-[contenteditable=true]:not(.cursorshield), [contenteditable=plaintext-only]:not(.cursorshield) 
+// there are two common variations of capitalization, so support both
+[contenteditable], [contentEditable] { outline: none; }
+
+.forceeditable, 
+[contenteditable=true]:not(.cursorshield), [contentEditable=true]:not(.cursorshield), 
+[contenteditable=plaintext-only]:not(.cursorshield), [contentEditable=plaintext-only]:not(.cursorshield) 
 { 
 	-webkit-user-select: auto; -moz-user-select: text; 
-	xcursor: text;
 }
-
 .absolutefill
 {
 	position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; height: 100%; width: 100%;
@@ -71,21 +74,97 @@ body.quit * { pointer-events: none; }
 #maintable {
 	border-collapse: collapse; table-layout: fixed;
 }
-#contenttd { 
+#contentareatd { 
 	position: relative; 
 	xbackground: linear-gradient(110deg, #fdcd3b 60%, #ffed4b 60%);
 	}
 #contentarea { 	
-	overflow-x: hidden; overflow-y: auto; word-wrap: break-word;
+	word-wrap: break-word;
+	overflow-x: hidden; 
+	overflow-y: scroll; 
 	}
+#contentareaants {
+	display: none;
+	border: 1px dashed var(--border-color);
+	pointer-events: none;
+}
+#contentareagutter {
+	width: 100%;
+}
+#contentareagutter > .gutter {
+	margin: 0px;
+	overflow: hidden;
+	position: relative;
+	xbackground: #F8F8F8;
+}
+body[data-hh-tool="type"] #contentareagutter > .gutter:after, /* type tool ought to pick out individual gutter parts */
+body[data-hh-tool="paint"] #contentareagutter > .gutter:after { 
+	position: absolute; content: ""; top: 0px; bottom: 0px; left: 0px; right: 0px;
+}
+#contentareagutter > .gutter.left { 
+	float: left; 
+	clear: left; 
+	text-align: left;	// this affects where the existing image goes...
+	transition: width 0.2s;
+}
+#contentareagutter > .gutter.right { 
+	float: right; 
+	clear: right; 
+	text-align: right;
+	transition: width 0.2s;
+}
+#contentareagutter > .gutter.across {
+	float: left; 
+	clear: both; 	/* is this better than right? */
+	text-align: center;
+
+	width: 100%; 
+	box-sizing: border-box;
+	transition: width 0.2s;
+}
+#contentareagutter > .gutter.across:after {
+	content: " ";
+	clear: both;
+}
+body[data-hh-tool="type"] #contentareatd .gutter.selected {
+	xbackground: highlight;
+	xoutline: 1px dashed var(--text-color);
+}
+body[data-hh-tool="type"] #contentareatd .gutter.selected:after { 
+	background: linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%), highlight;
+	background-image: linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%), highlight;
+	background-size: 8px 1px, 8px 1px, 1px 8px, 1px 8px, 100% 100%;
+	background-position: 0 0, 0 100%, 0 0, 100% 0, 0 0;
+	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y, no-repeat;
+	xanimation: hh-marching-ants 3.5s linear infinite running reverse;
+} 
+@keyframes hh-marching-ants
+{
+	0% { background-position: 0 0, 0 100%, 0 0, 100% 0; }
+	100% { background-position: 40px 0, -40px 100%, 0 -40px, 100% 40px; }
+}
+
 #contentareainner {
-	position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px;
-	padding: 2px;
+	padding: 4px;
+	padding-bottom: 2em;
+	min-height: 100%; 
+	box-sizing: border-box;
+	xtext-align: justify;
+	outline: none;
 }
 #contentareacanvas {
 	pointer-events: none;
+	z-index: 998;
 }
 #contentarea button { cursor: inherit; }
+
+#contentarea { box-shadow: 0px 1px 3px var(--toolbar-glass-color); }
+
+body[data-hh-tool="user"] #toolbartr #user,
+body[data-hh-tool="type"] #toolbartr #type,
+body[data-hh-tool="paint"] #toolbartr #paint  { 
+	background-color: var(--toolbar-glass-color);
+ }
 
 body[data-hh-tool="user"] #contentarea 
 { 
@@ -100,95 +179,138 @@ body[data-hh-tool="type"] #contentarea
 	background-image: linear-gradient(to right, highlight 50%, highlight 50%), linear-gradient(to right, highlight 50%, highlight 50%), linear-gradient(to bottom, highlight 50%, highlight 50%), linear-gradient(to bottom, highlight 50%, highlight 50%);
 }
 
-body[data-hh-tool="paint"] #contenttd { cursor: none; }
-body[data-hh-tool="paint"] #contentareacanvas { pointer-events: auto; z-index: 998; }
+body[data-hh-tool="paint"] #contentareatd { cursor: crosshair; }
+body[data-hh-tool="paint"] #contentareatd:active { cursor: none; }
+body[data-hh-tool="paint"] #contentareacanvas { /*pointer-events: auto;*/ /*z-index: 998;*/ }
 body[data-hh-tool="paint"] #contentareacanvas:hover {  }
 body[data-hh-tool="paint"] * { touch-action: none; }
 
-body[data-hh-tool="edit"] #contenttd { cursor: crosshair; }
-body[data-hh-tool="edit"] #contentarea button { position: relative; }
-body[data-hh-tool="edit"] #contentarea button:after { position: absolute; content: "Hello"; left: 0px; top: 0px; right: 0px; bottom: 0px; cursor: pointer; }
-body[data-hh-tool="edit"] #contentarea button:hover,
-body[data-hh-tool="edit"] #contentarea div:hover { outline: thin dashed gray; }
-body[data-hh-tool="edit"] #contentarea
-{
-	cursor: crosshair;
-	background-size: 8px 1px, 8px 1px, 1px 8px, 1px 8px;
-	background-position: 0 0, 0 100%, 0 0, 100% 0;
-	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-	background-image: linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to right, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%), linear-gradient(to bottom, #ccc 50%, #333 50%);
-	animation: hh-marching-ants 3.5s linear infinite running reverse;
-}
-body[data-hh-tool="edit"] #contentareacanvas { touch-action: none; }
-body[data-hh-tool="edit"] #contentareacanvas { pointer-events: auto; z-index: 998; }
 
-/*body[data-hh-tool="paint"] #contentarea 
-{
-	background-size: 8px 3px, 8px 3px, 3px 8px, 3px 8px;
-	background-position: 0 0, 0 100%, 0 0, 100% 0;
-	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-	background-image: 
-		linear-gradient(to right, var(--screen-color) 50%, var(--screen-color) 50%), 
-		linear-gradient(to right, var(--screen-color) 50%, var(--screen-color) 50%), 
-		linear-gradient(to bottom, var(--screen-color) 50%, var(--screen-color) 50%),
-		 linear-gradient(to bottom, var(--screen-color) 50%, var(--screen-color) 50%);
-}*/
-
-@keyframes hh-marching-ants
-{
-	0% { background-position: 0 0, 0 100%, 0 0, 100% 0; }
-	100% { background-position: 40px 0, -40px 100%, 0 -40px, 100% 40px; }
-}
-
-#toolbartr { text-align: center; background: var(--toolbar-color); z-index: 999; }
-#toolbartr > td:active { background-color: var(--toolbar-glass-color); }
-#toolbartr img { pointer-events: none; }
-@media(prefers-color-scheme: dark) { 
-	#toolbartr img.darkfilter { -webkit-filter: invert(90%); filter: invert(90%); } 
-	}
-#toolbar #home:active,
-#toolbar #trash:active,
-body[data-hh-tool=user] #toolbartr #user,
-body[data-hh-tool=type] #toolbartr #type,
-body[data-hh-tool=paint] #toolbartr #paint,
-body[data-hh-tool=cross] #toolbartr #cross,
-body[data-hh-crosshair=true] #toolbartr #cross,
-body[data-hh-tool=edit] #toolbartr #edit  { background-color: var(--toolbar-glass-color); }
 
 #version { 
 	position: absolute; 
 	right: 2px; 
 	bottom: 2px; 
-	color:var(--toolbar-color); 
-	white-space: pre; 
-	}
-xbody[data-hh-tool=edit] #version
-{
+	text-align: right;
+	padding-right: 2px;
 	color:var(--toolbar-glass-color); 
+	white-space: pre; 
+	pointer-events: none;
+	}
+#version:hover { 
+	color:var(--toolbar-glass-color); 
+	}
 
+#toolbartr { text-align: center; background: var(--toolbar-color); z-index: 999; }
+#toolbartr td { position: relative; }
+
+/*#toolbartr > td:active { background-color: var(--toolbar-glass-color); }*/
+#toolbartr img { pointer-events: none;  }
+/*#toolbartr td:hover img { box-shadow: 0 8px 6px -6px black; }*/
+
+@media(prefers-color-scheme: dark) { 
+	#toolbartr img.darkfilter { -webkit-filter: invert(90%); filter: invert(90%); } 
+	}
+
+#recycle_menu
+{
+	cursor: default;
+	text-align: center;
+	display: none; 
+	position: absolute; 
+	right: 0px; 
+	xborder-top: 10px solid transparent;
+	padding-bottom: 3px;
+	padding-top: 6px;
+	bottom: 100%; bottom: calc(100% - 3.5px); 
+	min-width: 100%; min-width: calc(100% + 1.5px); 
+	z-index:999; 
+	background:var(--toolbar-color); 
+	border-radius: 4px 0px 0px 0px;
+	box-shadow: inset 1px 1px 3px var(--toolbar-glass-color);
 }
+#recycle_menu.display
+{
+	display: block;
+}
+.recycle_menuitem
+{
+	padding: 4px 10px 4px 10px;
+	white-space:nowrap;
+}
+.recycle_menuitem:nth-child(1) {
+	border-radius: 4px 0px 0px 0px;
+}
+.recycle_menuitem:hover
+{
+	transition: background 0.25s;
+	background: var(--toolbar-glass-color);
+}	
+
 
 </style>
 
+</head>
 <body> 
+
+<script src=beep.js></script>
 
 <table id=maintable class=absolutefill>
 	<tr height=99%>
-		<td id=contenttd valign=top colspan=5>
-			<code id=version>v0.0.2</code>
+		<td id=contentareatd valign=top colspan=4>
+			<code id=version>v0.0.5</code> 
 			<canvas id=contentareacanvas class=absolutefill></canvas>
 			<div id=contentarea class=absolutefill>
-				<div id=contentareainner data-hh-typing style="outline:none;">
-						Welcome to HyperHello. 
-						<br> 
-						<button>New Button</button>
-						<div style="background: white; border: medium solid green; border-radius: 6px; color: var(--yellow); float: right;">Floated text</div>
-						<div style='clear:both;'>Text after clearing the float</div>
+				<div id=contentareagutter>
+					<!--div class="gutter left"><img src=images/bill.png draggable=false style="width:5em"></div>
+					<div class="gutter right" style="height:4em;"></div>
+					<div class="gutter right selected"><img src=images/bill.png draggable=false style="width:8em"></div>
+					<div class="gutter left" style="height: 10em;"></div>
+					<div class="gutter across">
+						<img src=images/bill.png draggable=false style='height: 2em; vertical-align: middle'>
+						<button onclick="if (hh.tool=='user') beep();" style="vertical-align: middle;"><img src=images/bill.png draggable=false><br>Be—eep</button>
+						<div contenteditable=true style="display: inline-block; border: 1px solid var(--toolbar-glass-color); color: var(--blue);"> Field</div> 
+						<button>Button</button>
+						<label style="font: caption;"><input type='checkbox'>Check</label>
+						<label style="font: caption;"><input checked name=test type='radio'>One</label>
+						<label style="font: caption;"><input name=test type='radio'>Two</label>
+						<select><option>One</option><option>Two</option></select>
+					</div!-->
+				</div>
+				<div id=contentareainner data-hh-typing>
+				
+	Welcome to HyperHello. 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 <label class=gutter><input type=checkbox value=true><b>Check!</b></label>138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 
+	   <br><br>   
+			
+						Welcome to HyperHello.  <br>
+						&nbsp;
+						<button class=gutter onclick="if (hh.tool=='user') beep();"><img src=images/bill.png draggable=false><br>Be—eep</button>&nbsp;
+						<div class=gutter contenteditable=true style="display: inline-block; border: 1px solid var(--toolbar-glass-color); color: var(--blue);"> Field</div> 
+						&nbsp;
+						<!-- A note about the above three dots...every object with its own identity needs a space after it or the caret is hard to use. !-->
+						<div class=gutterstyle="background: white; border: 2px solid green; border-radius: 2px; color: var(--yellow); float: right;">Floated</div>
+						<div class=gutterstyle="background: white; border: 2px solid green; border-radius: 2px; color: var(--yellow); float: right;">Floated</div>
+						<div class=gutterstyle="background: white; border: 2px solid green; border-radius: 2px; color: var(--yellow); float: right;">Below on the right</div>
 						
-						<div style="background: red; border: medium solid green; border-radius: 6px; color: var(--yellow); position: absolute; right: 20px; xwidth: 50px;">Absolute text</div>
+						<div class=gutter style='clear:both;'>Text after clearing the float</div>
+						
+						<div style="background: red; border: medium solid green; border-radius: 6px; color: var(--yellow); position: absolute; right: 20px; xwidth: 50px;">,,0</div>
 						Text after the absolute text
 						<div> container: <div>"first subcontained"</div> <div>"subcontained number two"</div> end </div>
-				<div> 
+						
+						1<br>
+						2<br>
+						3<br>
+						4<br>
+						5<br>
+						6<br>
+						7<br>
+						8<br>
+						9<br>
+						10<br>
+						
+				</div> 
+				<div id=contentareaants class=absolutefill></div>
 			</div>
 		</td>
 	</tr>
@@ -197,107 +319,434 @@ xbody[data-hh-tool=edit] #version
 		onmousedown="var tool = event.target.closest('.settooltoid'); if (tool) { setTool(tool.id); event.preventDefault(); }"
 		>
 		<td id=user class=settooltoid><img class=darkfilter src=images/hand.png height=22 draggable=false ></td>
-		<td id=type class=settooltoid><img class=darkfilter src=images/textcaret.png height=22 draggable=false></td>
-		<td id=paint class=settooltoid><img class=darkfilter src=images/stylus.png height=25 draggable=false></td>
-		<td id=edit class=settooltoid><img class=darkfilter src=images/drag.png height=25 draggable=false></td>
-		</span>
-		<!--td id=home class=toolhasbubble style='position: relative;' 
-			onmousedown="this.querySelector('div').style.display='block';" 
-			onmouseleave="this.querySelector('div').style.display='none';" 
-			onclick="/*alert(this.id);*/">
-			<img class=darkfilter src=images/globe.png height=25 draggable=false>
-		 	<div id=recyclemenu style="display: none; position: absolute; bottom: 100%; min-width: 100%; right: 0px; z-index:999; ">
-				<div style="position:relative;xleft:-1px;xtop:-1px; background: var(--toolbar-color); padding: 4px"><button>Home</button></div>
-			</div>
-		</td!-->
-		<td id=trash class=toolhasbubble style='position: relative;'  
-			onmousedown="if (event.target===this) this.querySelector('div').style.display=(this.querySelector('div').style.display=='block')?'none':'block';" 
-			onmouseleave="this.querySelector('div').style.display='none';">
+		<td id=type class=settooltoid>
+			<img class=darkfilter src=images/textcaret.png height=22 draggable=false>
+			<!--code style="position: absolute; bottom: 100%; right: 0; color: var(--toolbar-color);;">esc</code!-->
+		</td>
+		<td id=paint class=settooltoid><img class=darkfilter src=images/pen.png height=25 draggable=false></td>
+		<td id=recycle class=toolhasbubble  
+			onmousedown="if (event.target===this) document.querySelector('#recycle_menu').classList.toggle('display');"
+			onmouseleave="if (event.target===this) document.querySelector('#recycle_menu').classList.remove('display');"
+			onclick="if (event.target!==this) setTimeout(function(){document.querySelector('#recycle_menu').classList.remove('display');},100);">
 			<img class=darkfilter src=images/recycle.png height=25 draggable=false>
-		 	<div id=recyclemenu style="display: none; position: absolute; bottom: 100%; min-width: 100%; right: 0px; z-index:999; ">
-				<div style="position:relative; background: var(--toolbar-color); padding: 4px">
-					<button onclick="if (confirm('delete storage?')) hh_quit();">Recycle</button>
-				</div>
+		 	<div id=recycle_menu>
+					<!--div class=recycle_menuitem onclick="">⇑</div>
+					<div class=recycle_menuitem onclick=""><font size=6>&#9843;</font></div!-->
+					<div class=recycle_menuitem onclick="beep();">Beep</div>
+					<div class=recycle_menuitem onclick="if (confirm('Recycle storage?')) hh_quit();">Recycle</div>
 			</div>
 		</td>
 	</tr>
 </table>
 
+
 <script>
 "use strict";
 
-// your basic save-to-the-recycle bin. We should have a 'dirty' green on the recycler
-// double click has got to be supported, and
+var cai = document.querySelector('#contentareainner'),
+	caa = document.querySelector('#contentareaants'),
+	cag = document.querySelector('#contentareagutter'),
+	catd = document.querySelector('#contentareatd'),
+	canvas = document.querySelector('#contentareacanvas'), 
+	ctx = canvas.getContext('2d'),
+	transparentImageData = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+
+var hh = { meta: false, shift: false, scrolled: false, mouse: [0,0], pressure: 0.1, scroll: 0 };
+
 if (localStorage.getItem('html'))
 {
-	document.querySelector('#contentareainner').innerHTML = localStorage.getItem('html');
+	cai.innerHTML = localStorage.getItem('html');
 }
+if (localStorage.getItem('gutter'))
+{
+	cag.innerHTML = localStorage.getItem('gutter');
+}
+
 if (localStorage.getItem('scroll'))
 {
 	document.querySelector('#contentarea').scrollTop = parseInt(localStorage.getItem('scroll')) || 0;
 }
-document.querySelector('#contentareainner').oninput = function() {
-	localStorage.setItem('html', document.querySelector('#contentareainner').innerHTML);
+
+window.onbeforeunload = hh_save;
+cai.oninput = hh_save;
+
+document.querySelector('#contentarea').onscroll = hh_event_properties;	// this is contentarea scroll; window scroll should be banned.
+
+catd.onmouseenter = function(event) { hh_event_properties(event); if(event.srcElement===this) set_mouse_in_catd(true); }
+catd.onmouseleave = document.onmouseleave = function(event) { hh_event_properties(event); if(event.srcElement===this) set_mouse_in_catd(false); }
+
+var is_mouse_in_catd = false;
+function set_mouse_in_catd(isOn)
+{
+	if (is_mouse_in_catd!=(is_mouse_in_catd=isOn))	// i love this gadget
+	{
+		if (hh.hover_activity)
+		{
+			hh.hover_activity(true);
+			hh.hover_activity = null;
+		}
+		if (isOn)
+		{
+			if (hh.hover_activity=create_hover_activity())
+			{
+				hh.hover_activity();
+			}
+		}
+	}
 }
 
-var hh = { meta: false, shift: false, scrolled: false, mouse: [0,0], pressure: 0.1, scroll: 0};
-['touchstart','touchmove','touchend','touchcancel','mousedown','mouseup','dblclick','mouseenter','mousemove','mouseout','scroll','keydown','keypress','keyup','contextmenu'].map(
-	(t) => window.addEventListener(t, hh_event,false)
-	);
-document.querySelector('#contentarea').onscroll = hh_event;	// this is contentarea scroll; window scroll should be banned.
+catd.onmousedown = catd.ontouchstart = function(event) { hh_event_properties(event); set_pressed_in_catd(true); }
+document.onmouseup = catd.ontouchend = function(event) { hh_event_properties(event); set_pressed_in_catd(false); }
 
-function hh_init()
+var is_pressed_in_catd = false;
+function set_pressed_in_catd(isOn)
 {
-	setTool(localStorage.getItem('tool'));
+	if (is_pressed_in_catd!=(is_pressed_in_catd=isOn))	// i love this gadget
+	{
+		if (hh.click_activity)
+		{
+			hh.click_activity(true);
+			hh.click_activity = null;
+		}
+		if (isOn)
+		{
+			if (hh.click_activity=create_click_activity())
+			{
+				hh.click_activity();
+			}
+		}
+	}
 }
-function hh_quit()
+
+document.onmousemove = document.ontouchmove = function(event) { hh_event_properties(event); if (hh.click_activity) hh.click_activity(); else if (hh.hover_activity) hh.hover_activity(); }
+
+document.oncontextmenu = function(event) { if (hh.click_activity) { hh.click_activity('cancel'); hh.click_activity = null; } }
+
+document.onkeydown = function(event)
 {
-	hh.quit = true;
-	document.body.classList.add('quit');
-	localStorage.removeItem('tool'); 
-	localStorage.removeItem('paths');
-	localStorage.removeItem('html');
-	window.location.reload();
-}
-function put()
-{
-	document.querySelector('#version').innerText = Array.prototype.slice.call(arguments).join(', ');
-}
-function hh_event(event)
-{
-	if (hh.quit) return;
-	
-	hh.type = {'touchstart':'mousedown','touchmove':'mousemove','touchend':'mouseup'}[event.type] || event.type;
+	if (!event.metaKey && event.keyCode == 8)
+	{
+		// amazingly, on safari the entire delete is found to be undoable!
+		var gutters = catd.querySelectorAll('.gutter.selected');
+		for (var i = gutters.length-1; i >= 0; i--)
+		{
+			cag.removeChild(gutters[i]);
+		}
+		return;
+	}
+
+	if (hh.tool == 'paint' || hh.tool == 'type')
+	{
+		var cmd = ({ 66: 'bold', 73: 'italic', 85: 'underline', 83: 'no-op' })[event.keyCode];
 		
-	// mouse is in page coordinates, although I think it should really be in content coordinates
+		if (hh.meta && cmd)
+		{
+			document.execCommand(cmd);
+			event.preventDefault();
+			return;
+		}
+		else if (event.keyCode == 27)
+		{
+			if (hh.click_activity)
+			{
+				hh.click_activity('cancel');
+				hh.click_activity = null;
+				event.preventDefault();
+			}
+			else
+			{
+				setTool(hh.tool == 'paint' ? 'type' : 'paint');
+				event.preventDefault();
+			}
+			return;
+		}
+	}
+
+}
+
+hh_init();
+
+function create_hover_activity()
+{
+	if (hh.tool == 'type')
+	{
+	}
+	else if (hh.tool == 'paint')
+	{
+		return function(finish)
+		{
+			clear_canvas();		// we're clearing it all, would be smarter to note dirty regions
+			
+			if (!finish)
+			{
+			ctx.beginPath();
+			ctx.arc(hh.mouse[0], hh.mouse[1], 2, 0, Math.PI*2, false);
+			ctx.strokeStyle = to_css_color('--background-color');
+			ctx.lineWidth = 2;
+			ctx.stroke();
+			ctx.fillStyle = to_css_color('--text-color');
+			ctx.fill();
+			
+			ctx.closePath();
+			}
+			else
+			{
+			}
+		}
+ 	}
+	else 
+	{
+		put('');
+	}
+}
+function create_click_activity()
+{
+	hh.clickLoc = hh.mouse;
+	var largest_bounds = [hh.clickLoc[0],hh.clickLoc[1],hh.clickLoc[0],hh.clickLoc[1]];
+	
+	if (hh.tool == 'type')
+	{
+		return function(finish)
+		{
+			largest_bounds = [
+				Math.min(largest_bounds[0], hh.mouse[0]-2),
+				Math.min(largest_bounds[1], hh.mouse[1]-2),
+				Math.max(largest_bounds[2], hh.mouse[0]+2),
+				Math.max(largest_bounds[3], hh.mouse[1]+2)
+				];
+
+			var minmax_rectangle = [
+				Math.min(hh.clickLoc[0],hh.mouse[0]),
+				Math.min(hh.clickLoc[1],hh.mouse[1]),
+ 				Math.max(hh.clickLoc[0],hh.mouse[0]),
+				Math.max(hh.clickLoc[1],hh.mouse[1])
+			];
+			
+			caa.style.left = Math.min(hh.clickLoc[0],hh.mouse[0]);
+			caa.style.top = Math.min(hh.clickLoc[1],hh.mouse[1]);
+			caa.style.width = Math.abs(hh.clickLoc[0]-hh.mouse[0]);
+			caa.style.height = Math.abs(hh.clickLoc[1]-hh.mouse[1]);
+			caa.style.display = 'block';
+			
+			//put(Math.pow(largest_bounds[2]-largest_bounds[0],2)+Math.pow(largest_bounds[3]-largest_bounds[1], 2))
+			var gutters = catd.querySelectorAll('.gutter');
+			for (var i = 0; i < gutters.length; i++)
+			{
+				var bcr = gutters[i].getBoundingClientRect();
+				var rect_intersect_and_selection_small_or_crossing_border = 
+				
+					Math.min(hh.clickLoc[0],hh.mouse[0]) <= bcr.right 
+						&& Math.min(hh.clickLoc[1],hh.mouse[1]) <= bcr.bottom+hh.scroll 
+						&& bcr.left <= Math.max(hh.clickLoc[0],hh.mouse[0]) 
+						&& bcr.top+hh.scroll <= Math.max(hh.clickLoc[1],hh.mouse[1])
+					
+					&& (
+						Math.pow(largest_bounds[2]-largest_bounds[0],2)+Math.pow(largest_bounds[3]-largest_bounds[1], 2) < 50
+						|| !(minmax_rectangle[0] > bcr.left 
+							&& minmax_rectangle[1] > bcr.top+hh.scroll
+							&& minmax_rectangle[2]  < bcr.right
+							&& minmax_rectangle[3] < bcr.bottom+hh.scroll)
+					)
+				
+				
+				gutters[i].classList.toggle('selected', rect_intersect_and_selection_small_or_crossing_border);
+				//gutters[i].classList.toggle('ants', intersect);
+			}
+			if (finish)
+			{
+				caa.style.display = 'none';
+			}
+		}
+	}
+	else if (hh.tool == 'paint')
+	{
+		//while (cag.firstChild)
+		//	cag.removeChild(cag.firstChild);
+		clear_canvas();
+		
+		var gutterRight = cag.getBoundingClientRect().right;
+		var spacer;	
+		var float;
+
+		if (hh.target && hh.target.classList.contains('gutter'))
+		{
+			float = hh.target;
+			spacer = hh.target.previousSibling;
+			var bcr = hh.target.getBoundingClientRect()
+			largest_bounds = [bcr.left,bcr.top+hh.scroll,bcr.right,bcr.bottom+hh.scroll];
+		}
+		else
+		{
+			var spacer = document.createElement('div');	
+			var float = document.createElement('div');
+
+			// these shouldn't be appended, they should be inserted in the right place and then shuffled
+			if (cag.childNodes.length)
+			{
+				cag.insertBefore(spacer, cag.childNodes[0]);
+				cag.insertBefore(float, cag.childNodes[1]);
+			}
+			else
+			{
+				cag.appendChild(spacer);
+				cag.appendChild(float);
+			}
+		}
+		//float.style.border = 'thin dotted gray';
+		// something's mesing this up when scrolling happens, but it kind of works for now
+		
+		return function(finish)
+		{
+			if (finish == 'cancel')
+			{
+				canvas.lastMouse = null;
+				cag.removeChild(spacer);
+				cag.removeChild(float);
+				return;
+			}
+				
+			largest_bounds = [
+				Math.min(largest_bounds[0], hh.mouse[0]-2),
+				Math.min(largest_bounds[1], hh.mouse[1]-2),
+				Math.max(largest_bounds[2], hh.mouse[0]+2),
+				Math.max(largest_bounds[3], hh.mouse[1]+2)
+				];
+				
+			var placement = largest_bounds[0] > gutterRight/2 ? 'right'
+				: largest_bounds[2] < gutterRight/2 ? 'left'
+				: 'across';
+			put(largest_bounds,placement)
+
+			spacer.classList = 'gutter ' + (placement == 'right' ? 'right' : 'left');
+			float.classList = 'gutter ' + placement;
+			
+			spacer.style.height = largest_bounds[1];
+
+			if (placement == 'right')
+				float.style.width = gutterRight - largest_bounds[0];
+			else if (placement == 'left')
+				float.style.width = largest_bounds[2];
+			else if (placement == 'across')
+				float.style.width = '';
+			
+			float.style.height = largest_bounds[3] - largest_bounds[1];
+			
+			shuffle_contentarea_gutters(spacer,float);
+
+			if (canvas.lastMouse)
+			{
+				ctx.strokeStyle = to_css_color('--text-color');
+				ctx.lineJoin = ctx.lineCap = "round";
+				ctx.lineWidth = hh.pressure * 10;
+				ctx.beginPath();
+				ctx.moveTo(Math.round(canvas.lastMouse[0]), Math.round(canvas.lastMouse[1]));
+				ctx.lineTo(Math.round(hh.mouse[0]), Math.round(hh.mouse[1]));
+				ctx.stroke();
+				ctx.closePath();
+			}
+			canvas.lastMouse = finish ? null : hh.mouse;
+
+			if (finish)
+			{
+				// unfortunately the damn thing draws in the current ink color, what about night mode?
+				
+				// 1. 2. 
+				// 1. make it a canvas, not an img, if possible
+				// 2. allow inline strokes like the last hyperhello if it doesn't escape the linewidth
+				
+				// time to copy the canvas stroke into an img
+				var imgTag = float.querySelector('img');
+				var img = imgTag || new Image();
+
+				//img.src = "images/bill.png";
+				
+				//ctx.fillRect(hh.mouse[0],hh.mouse[1],10,10);
+
+				var float_bcr = float.getBoundingClientRect();
+				var dpr = (window.devicePixelRatio || 1)
+				var ImageData = ctx.getImageData(float_bcr.left*dpr, float_bcr.top*dpr, float_bcr.right*dpr, float_bcr.bottom*dpr);
+
+				/*function getImageURLForImageData(imgData, width, height) {
+					var new_canvas = document.createElement('canvas');
+					var new_ctx = new_canvas.getContext('2d');
+					new_canvas.width = width*dpr;
+					new_canvas.height = height*dpr;
+					// first draw the existing image
+					
+					// now draw the canvas
+					new_ctx.putImageData(imgData, 0,0);
+					return new_canvas.toDataURL('image/png'); //image URL
+				}*/
+				
+				//img.src = canvas.toDataURL('image/png');
+				//img.src = getImageURLForImageData(ImageData, float_bcr.width, float_bcr.height);
+
+				var new_canvas = document.createElement('canvas');
+				var new_ctx = new_canvas.getContext('2d');
+				new_canvas.width = float_bcr.width*dpr;
+				new_canvas.height = float_bcr.height*dpr;
+				// first draw the existing image
+				if (imgTag)
+					new_ctx.drawImage(imgTag, 0,0);
+				
+				// now draw the canvas
+				new_ctx.putImageData(ImageData, 0,0);
+				if (imgTag)
+					new_ctx.drawImage(imgTag, 0,0);
+
+				img.src = new_canvas.toDataURL('image/png'); //image URL
+
+				img.width = float_bcr.width;
+
+				if (!imgTag)
+					float.appendChild(img);
+				setTimeout(function() { float.style.height = ''; }, 100);
+				
+				/* This doesn't work as well yet
+				float.appendChild(new_canvas);
+				float.style.width = '';
+				new_ctx = new_canvas.getContext('2d');
+				new_ctx.width = float_bcr.width / 3;
+				new_ctx.height = float_bcr.height / 3;
+				new_ctx.putImageData(ImageData, 0,0);
+				//new_canvas.width = float_bcr.width*dpr
+				*/
+				
+				hh_save();
+			}
+			
+
+		}
+	}
+	else return function(finish)
+	{
+		put('click',hh.mouse,finish);
+	}
+}
+
+function hh_event_properties(event)
+{
+	// mouse is in page coordinates
 	if (event.touches && event.touches[0])
 	{
 		hh.mouse = [event.touches[0].pageX, event.touches[0].pageY + hh.scroll];
 		if (typeof event.touches[0]["force"] !== "undefined" && event.touches[0]["force"] > 0)
-			hh.pressure = event.touches[0]["force"]
-		/*touches.innerHTML = `
-			touchType = ${touch.touchType} ${touch.touchType === 'direct' ? '👆' : '✍️'} <br/>
-			radiusX = ${touch.radiusX} <br/>
-			radiusY = ${touch.radiusY} <br/>
-			rotationAngle = ${touch.rotationAngle} <br/>
-			altitudeAngle = ${touch.altitudeAngle} <br/>
-			azimuthAngle = ${touch.azimuthAngle} <br/>
-			`;*/
+			hh.pressure = event.touches[0]["force"];
+		// { touch= { 'direct'||!, radiusX,radiusY,altitudeAngle,rotationAngle,azimuthAngle }
 	}
 	else if (event.pageX !== undefined)
 	{
-		hh.mouse = [event.pageX,event.pageY /*+ hh.scroll*/];
+		hh.mouse = [event.pageX,event.pageY + hh.scroll];
 		hh.pressure = 0.1;
 	}
-	put (hh.type,hh.mouse,hh.pressure, hh.scroll);	
-		
+	
 	// safari has bugs with metakey, one is the mousemove right after scrolling is always modifiers false
-	if (hh.type == 'scroll') 
+	hh.scroll = document.querySelector('#contentarea').scrollTop;
+	if (event.type == 'scroll') 
 	{ 
 		hh.scrolled = true; 
 		window.scrollTop = 0;	// enforcement in this version
-		localStorage.setItem('scroll', (hh.scroll=document.querySelector('#contentarea').scrollTop)); 
-		// would be slick to call mousemove on the canvas to refresh. However we're switching canvas to fixed and having 
+		localStorage.setItem('scroll', hh.scroll); 
 	}
 	if (event.metaKey !== undefined && !hh.scrolled)	
 	{
@@ -305,276 +754,173 @@ function hh_event(event)
 		hh.shift = !!event.shiftKey;
 		hh.alt = !!event.altKey;
 	}
-	if (hh.type == 'mousemove') hh.scrolled = false;
-
-	if (hh.type == 'contextmenu' || event.which == 3 || hh.type == 'touchcancel')
-	{
-		if (hh.activity)
-		{
-			hh.activity.cancel();
-			hh.activity = null;
-		}
-		return;
-	}
+	if (event.type == 'mousemove') hh.scrolled = false;
 	
-	// this kind of sucks again, what if the mouse travels in and out during the click, don't want to destroy the previous activity
-	var element = event.srcElement || event.target;
-	/*if (hh.type == 'mouseenter' || hh.type == 'mousemove' || hh.type == 'mousedown' || hh.type == 'mouseup')
-		setHover(element, (hh.type != 'mouseup') && !!event.which );
-	else if (hh.type == 'mouseout')	// i guess this only really applies when the cursor leaves the window?
-		setHover(null);
-	return;
-
-	function setHover(element, button)
-	{
-		if (hh.activity && hh.activity.element !== element)
-		{
-			// end the activity. no
-			if (hh.activity.button)
-			{
-				hh.activity.button = false;
-				hh.activity.up();
-			}
-			if (hh.activity.hover)
-			{
-				hh.activity.hover = false;
-				hh.activity.out();
-			}
-			hh.activity = null;
-		}
-		if (!hh.activity && element)
-		{
-			createActivity(hh.activity={ 
-				element, 
-				hover: false, 
-				button: false, 
-				in() { console.log('in' + this.element) }, 
-				out() { console.log('out' + this.element) }, 
-				down() { console.log('down' + this.element) }, 
-				up() { console.log('up' + this.element) } ,
-				cancel() { console.log('cancel' + this.element) } 
-				});
-			hh.activity.hover = true;
-			hh.activity.in();
-		}
-		if (hh.activity)
-		{
-			if (hh.activity.button != button)
-			{
-				hh.activity.button = button;
-				button ? hh.activity.down() : hh.activity.up();
-			}
-			if (hh.activity.button != button)
-			{
-				hh.activity.button = button;
-				button ? hh.activity.down() : hh.activity.up();
-			}
-		}
-	}
-	function createActivity(activity)
-	{
-		// activity = { element, hover, button, in(), out(), down(), up(), cancel() }
-		if (activity.element === canvas)
-		{
-			var hoverPath;
-			activity.in = function() { 
-				if (!hoverPath)
-					paths.push(hoverPath={ points: [[0,0,1]], 
-						stroke: '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 7)] });
-				hoverPath.points[0] = [hh.mouse[0],hh.mouse[1],Math.log(hh.pressure + 1) * 100];
-				renderCanvas();
-				}
-			activity.out = function() { 
-				paths.pop();
-				hoverPath = null;
-				renderCanvas();
-				}
-		}
-	}
-	
-
-		put(JSON.stringify(hh.activity));
-		return;*/
-		
-	// mousedown 
-//console.log(textcolor.split(''));
-
-	// what's the situation?
-	// if you get antyhing 
-
-	// THIS WORKS. So distill the enable-activate-deactivate-disable templete
-	if (element === canvas && hh.tool == 'paint')
-	{
-		// a minimum pressure would be nice so you could just drag the pen across the screen with no weight. start here and then expand to maybe edit tools
-		var wasHovering = paths.length && paths[paths.length-1].hover;
-		var wasButtoning = paths.length && paths[paths.length-1].button;
-
-		// smoothen line width. 
-		var pt = [hh.mouse[0],hh.mouse[1],Math.log(hh.pressure + 1.5) * 70 * 0.2];
-		put(pt);
-		if (hh.type == 'mousedown')
-		{
-			// canvas mousedown starts a text color path in button mode.
-			paths.push({ button: true, points: [pt], stroke: '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 7)] });
-		}
-		else if (hh.type == 'mouseup' && wasButtoning)
-		{
-			// canvas mouseup closes it.
-			paths[paths.length-1].button = false;
-			//paths[paths.length-1].points[0][2] = 16;
-			localStorage.setItem('paths', JSON.stringify(paths));
-			// the closure of the path ought to become a commandable object itself
-		}
-		else if (hh.type == 'mouseenter' || (hh.type == 'mousemove' && !wasButtoning && !wasHovering))
-		{
-			paths.push({ hover: true, points: [pt], stroke: '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 7)] });
-		}
-		else if (hh.type == 'mousemove' && wasButtoning)
-		{
-			paths[paths.length-1].points.push(pt);
-			event.preventDefault();
-		}
-		else if (hh.type == 'mousemove' && wasHovering)
-		{
-			paths[paths.length-1].points[paths[paths.length-1].points.length-1] = pt;
-			event.preventDefault();
-		}
-		else if (hh.type == 'mouseout' && wasHovering)
-		{
-			paths.pop();
-		}
-		else if (hh.type == 'keydown' && event.keyCode == 8 && paths.length)
-		{
-			paths.pop();
-		}
-
-		//requestAnimationFrame(renderCanvas);
-		renderCanvas();
-	}
-	
-	if (element === canvas && hh.tool == 'edit')
-	{
-		if (hh.type == 'mousedown')
-		{
-			// canvas mousedown starts a text color path in button mode.
-			dragSel = [hh.mouse[0],hh.mouse[1],hh.mouse[0],hh.mouse[1]];
-			put(dragSel);
-		}
-		else if (hh.type == 'mouseup')
-		{
-			dragSel = null;
-		}
-		else if (hh.type == 'mousemove' && dragSel)
-		{
-			dragSel[2] = hh.mouse[0];
-			dragSel[3] = hh.mouse[1];
-		}
-
-		//requestAnimationFrame(renderCanvas);
-		renderCanvas();
-	}
-
-	
-	/*if (hh.type == 'mousedown' && element === canvas)
-	{
-		af = requestAnimationFrame(updateDot);
-	}*/
+	hh.target = (event.srcElement || event.target);
 }
 
-/*
-	Looks like a serious rewrite with potential for serious improvement. Make everything simpler!
-	Text tool: user bold italic underline + image pasting and dragging + saving. Start with faux maps, *then* add parsers.
-	Edit tool: dragging rects in blank space, or moving exsiting rects. Float to right in text if that's where you draw it.
-*/
+function hh_init()
+{
+	setTool(localStorage.getItem('tool'));
+}
 
+function hh_save()
+{
+	if (hh.quit)
+		return;
+		
+	if (cai.lastChild
+		&& String(cai.lastChild.nodeName).toLowerCase()==='div' 
+		&& cai.lastChild.childNodes.length===1
+		&& String(cai.lastChild.lastChild.nodeName).toLowerCase()==='br')
+	{
+		// <div><br /></div> should always end a contenteditable
+	}
+	else
+	{
+		var div = document.createElement('div');
+		div.appendChild(document.createElement('br'));
+		cai.appendChild(div);
+	}
+
+	localStorage.setItem('html', cai.innerHTML);
+	localStorage.setItem('gutter', cag.innerHTML);
+}
+function hh_quit()
+{
+	hh.quit = true;
+	document.body.classList.add('quit');
+	window.localStorage.clear();
+	window.location.reload();
+}
+function put()
+{
+	document.querySelector('#version').innerText = Array.prototype.slice.call(arguments).join(', ');
+	//console.log('put ' + Array.prototype.slice.call(arguments).join(', '));
+}
+/*function put_after()
+{
+	document.querySelector('#version').innerText += '\n' + Array.prototype.slice.call(arguments).join(', ');
+}*/
+function any_color()
+{
+	return '--'+['red','orange','yellow','green','blue','purple'][Math.floor(Date.now() / 2000 % 6)];
+}
+function to_css_color(colorOrVar)
+{
+	return (colorOrVar[0]=='-' ? String(getComputedStyle(document.documentElement).getPropertyValue(colorOrVar)) : colorOrVar).trim();
+}
+function element_caret_range(element, event)
+{
+	var range, x = hh.mouse[0], y = hh.mouse[1] + hh.scroll, oldCE = element.contentEditable;
+	if (String(oldCE) != 'true')
+		element.contentEditable = true;
+
+	// Try the simple IE way first
+	if (document.body.createTextRange) 
+	{
+		range = document.body.createTextRange();
+		range.moveToPoint(x, y);
+	}
+	else if (document.createRange) 
+	{
+		if (event.rangeParent) 
+		{
+			// Try Mozilla's rangeOffset and rangeParent properties
+			range = document.createRange();
+			range.setStart(event.rangeParent, event.rangeOffset);
+			range.collapse(true);
+		}
+		else if (document.caretPositionFromPoint) 
+		{
+			// Try the standards-based way next
+			var pos = document.caretPositionFromPoint(x, y);
+			range = document.createRange();
+			range.setStart(pos.offsetNode, pos.offset);
+			range.collapse(true);
+		}
+		else if (document.caretRangeFromPoint) 
+		{
+			// Next, the WebKit way
+			range = document.caretRangeFromPoint(x, y);
+		 }
+	}
+	
+	if (range && !(element === range.startContainer || element.contains(range.startContainer)))
+		range = null;
+		
+	if (String(oldCE) != 'true')
+		element.setAttribute('contentEditable', oldCE);
+	
+	return range;
+}
+function shuffle_contentarea_gutters(first, last)
+{
+	// #gutters contains .left and .right elements which need to be ordered so that the next one is always on the shorter side.
+	// if only first through last have changed, we have to keep going until there's no more bad ones.
+	var next = cag.firstChild, apply = !first, pos = [0,0], badElement;
+	do
+	{
+		apply = apply || (next===first);
+		if (apply && next.classList)
+		{
+			var nextOnLeft = next.classList.contains('left');
+			if ((pos[0] == pos[1]) || nextOnLeft==(pos[0] < pos[1]))
+			{
+				if (badElement)
+				{
+					console.log('MOVING: left='+pos[0]+',right='+pos[1]+','+next.innerText);
+					next.parentNode.insertBefore(next, badElement);
+				}
+				else
+				{
+					console.log('OK: left='+pos[0]+',right='+pos[1]+','+next.innerText);
+				}
+			}
+			else
+			{
+				// this can tag elements as BAD if they're at the end of the list, but that won't change anything
+				console.log('BAD: left='+pos[0]+',right='+pos[1]+','+next.innerText);
+				if (!badElement)
+					badElement = next;
+				else if (badElement === next)	// we found it again
+					badElement = null;
+			}
+			// important question. if we're changing the sibling orders inside this function, can we count on BCR() returning the right data before a reflow?
+			pos[nextOnLeft?0:1] = next.getBoundingClientRect().bottom; 
+		}
+	}
+	while (next !== last && (next=next.nextSibling));
+}
 function setTool(tool) 
 { 
 	hh.tool = tool = (tool||'user');
 	document.body.setAttribute('data-hh-tool', tool); 
 	localStorage.setItem('tool',tool); 
+	
 	var hhtyping = document.querySelectorAll('[data-hh-typing]');
 	for (var i = 0; i < hhtyping.length; i++)
-		hhtyping[i].setAttribute('contenteditable', (tool=='type'));
-}
-
-hh_init();
-
-var canvas = document.querySelector('#contentareacanvas'), 
-	dpr = (window.devicePixelRatio || 1), 
-	dragSel,
-	paths = JSON.parse(localStorage.getItem('paths')) 
-		|| [ { points: [[10,10,15],[100,100],[200,10],[300,100]], stroke: '--green' }, 
-			{ points: [[10,100,10],[100,10],[200,100],[300,10]], stroke: '--blue' } ];
-
-function renderCanvas()
-{
-	var textcolor = String(getComputedStyle(document.documentElement).getPropertyValue('--text-color')).trim();
-
-	var ctx = canvas.getContext('2d'), cbcr = canvas.getBoundingClientRect(), csize = [cbcr.width*dpr,cbcr.height*dpr];
-	if (canvas.width != csize[0]) canvas.width = csize[0];
-	if (canvas.height != csize[1]) canvas.height = csize[1];
- 	ctx.clearRect(0,0,csize[0],csize[1]);
-	for (var p = 0; p < paths.length; p++)
 	{
-		var path = paths[p], points = path.points;
-		
-		if (points.length)
-		{
-			// draw the color if any inside a larger one
-			
-			var lineWidth = points[0][2] || 8, strokeColor = '--toolbar-color';
-			if (strokeColor[0] == '-')
-				strokeColor = String(getComputedStyle(document.documentElement).getPropertyValue(strokeColor)).trim() || 'gray';
-			ctx.lineWidth = lineWidth*2;
-			ctx.strokeStyle = strokeColor;
-			ctx.lineJoin = ctx.lineCap = "round";
-			strokePaths();
-			
-			if (path.stroke)
-			{
-				strokeColor = path.stroke;
-				if (strokeColor[0] == '-')
-					strokeColor = String(getComputedStyle(document.documentElement).getPropertyValue(strokeColor)).trim() || 'gray';
-				ctx.strokeStyle = strokeColor;
-				ctx.lineWidth = lineWidth;
-				strokePaths();
-			}
-			
-			function strokePaths()
-			{
-				ctx.beginPath();
-				ctx.moveTo((points[0][0]-0.01)*dpr,(points[0][1]-0.01)*dpr);
-				for (var i=(points.length==1) ? 0 : 1; i < points.length; i++)
-				{
-					if (points[i][2] !== undefined && points[i][2] != lineWidth)
-						ctx.lineWidth = (lineWidth=points[i][2]);
-						
-					ctx.lineTo(points[i][0] * dpr,points[i][1] * dpr);
-					//ctx.quadraticCurveTo(points[i][0] * dpr, points[i][1] * dpr, points[Math.max(i-1,0)][0] * dpr, points[Math.max(i-1,0)][1] * dpr);
-					if (lineWidth >= 0.2) ctx.stroke(); 
-					
-					ctx.beginPath();
-					ctx.moveTo(points[i][0] * dpr,points[i][1] * dpr);
-				}
-				ctx.stroke(); 
-				ctx.closePath();
-			}
-
-		}
+		hhtyping[i].setAttribute('contenteditable', (tool=='type'));	// ought we allow other values? What about data-hh-typing=false?
 	}
 	
-	if (dragSel)
+	var gutters = document.querySelectorAll('#contentareagutter > .gutter');
+	for (var i = 0; i < gutters.length; i++)
 	{
-		ctx.strokeStyle = String(getComputedStyle(document.documentElement).getPropertyValue("--border-color")).trim();
-		ctx.lineWidth = dpr;
-		ctx.setLineDash([dpr*2+1,dpr*2+1]);
-		ctx.strokeRect(Math.min(dragSel[0],dragSel[2])*dpr, Math.min(dragSel[1],dragSel[3])*dpr,
-			Math.abs(dragSel[0]-dragSel[2])*dpr, Math.abs(dragSel[1]-dragSel[3])*dpr);
-		ctx.setLineDash([]);
+		gutters[i].classList.remove('selected');
 	}
-
+	
 }
-renderCanvas();
+function clear_canvas()
+{
+	// set canvas to page and resolution independent transform
+	var dpr = (window.devicePixelRatio || 1), cbcr = canvas.getBoundingClientRect(), csize = [cbcr.width*dpr,cbcr.height*dpr];
+	if (canvas.width != csize[0]) canvas.width = csize[0];
+	if (canvas.height != csize[1]) canvas.height = csize[1];
+	ctx.setTransform((window.devicePixelRatio || 1), 0, 0, dpr, 0, -hh.scroll*dpr);
+	ctx.clearRect(0,hh.scroll,cbcr.width,cbcr.height+hh.scroll);
+}
+
 
 </script>
 

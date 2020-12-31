@@ -1,0 +1,1244 @@
+<!-- (c) 2020 by Hypervariety Custom Programming. All rights reserved. !-->
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset="UTF-8">
+<!-- begin base meta tag in head
+
+end base meta tag in head !-->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon" href="images.folder/apple-touch-icon.png">
+<!--link rel="apple-touch-startup-image" sizes="640x1136" href="images.folder/binky.png" /!-->
+<meta name="supported-color-schemes" content="light dark">
+<meta name="theme-color" content="#F5F5F5" />
+<link rel="shortcut icon" href="images.folder/favicon.ico" type="image/x-icon/">
+
+	<!-- https://news.ycombinator.com/item?id=25200702 
+	<link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css">
+	!-->
+	
+	<!-- https://newcss.net/usage/ 
+	<link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+	!-->
+	
+	<!-- https://uglyduck.ca/typesafe-css/ 
+	<link rel="stylesheet" href="https://uglyduck.ca/typesafe-css/typesafe.css">
+	!-->
+	
+<link rel=stylesheet type=text/css href=LS.css>
+<link rel=stylesheet type=text/css href=custom.css>
+
+<script type=text/javascript src=LS.js></script>
+<script type=text/javascript src=LS_Activity.js></script>
+<script type=text/javascript src=LS_DOM.js></script>
+<script type=text/javascript src=custom.js></script>
+
+</head>
+
+<body>
+		
+<table id=maintable>
+		
+	<thead>
+	<tr id=toolbartr class=toolbar_tr>
+		<th id=toolbarth>
+			
+		<table width=100% cellspacing=0>
+			<tr>
+		<!-- user menu !-->
+		<td id=user class=hh_set_tooltoid>
+			<!--div class=onClickDecTarget style="xpadding: 4px; display: inline-block; vertical-align: middle">
+				<button id=dec_back class="onClickGoBack toolbar_button">&#9664;</button> 
+			</div!-->
+			<img class='darkfilter heightonepointfive' src=images.folder/hand.svg draggable=false style="vertical-align: middle">
+		</td>
+		
+		<!-- type menu !-->
+		<td id=type class=hh_set_tooltoid>
+			<div class='hh_paint_stripe_if_type_tool'></div>
+			<img class='darkfilter heightonepointfive' src=images.folder/textcaret.svg draggable=false style='position: relative; vertical-align: middle;'>
+			<span id=textdetails style="position: relative; padding-left: 4px; xpadding-right: 0px; xdisplay: inline-block;">
+				<div class=onClickDecTarget style="xpadding: 4px; display: inline-block;">
+					<!--button id=dec_removeFormat class=toolbar_button>&#127335;</button!-->
+					<button id=dec_back class="onClickGoBack toolbar_button">&#9664;</button> 
+
+					<button id=dec_bold class=toolbar_button><b>B</b></button>
+					<button id=dec_italic class=toolbar_button><i>I</i></button>
+					<button id=dec_underline class=toolbar_button><u>U</u></button>
+					<button id=dec_strikethrough class=toolbar_button><s>S</s></button>
+					<button id=dec_superscriptsubscript class='toolbar_button after_content' data-after-content="𝑥²"></button>
+					<button id=dec_fontsize class='toolbar_button after_content' data-after-content="#">&#x21c5;</button>
+					<!--button id=dec_createLink class=toolbar_button style="vertical-align: bottom;"><img src=images.folder/chain.svg class='darkfilter heightone'></button>
+					<button id=dec_insertimage class=toolbar_button style="vertical-align: bottom;"><img src=images.folder/mountains.svg class='darkfilter heightone'></button!-->
+					
+					<button id=dec_dialog class='toolbar_button onClickShowModalDialog'><b>...</b></button>
+				</div>
+			</span>
+			<!--button id=dec_delete class=toolbar_button style="xdisplay: none;"><font size=5>&#x232B;</font></button!-->
+		</td>
+
+		<!-- paint menu !-->
+		<td id=paint class='hh_set_tooltoid hh_paint_set_color_to_textcolor'>
+			<!-- paint stripes should be in background-image !-->
+			<div class='hh_paint_stripe_if_paint_tool'></div>
+			<img class='darkfilter heightonepointfive' src=images.folder/pen.svg draggable=false style="position: relative;">
+		</td>
+		
+		<!-- color swatch !-->
+		<td id=swatch>
+			<canvas class='hh_canvas_swatch'></canvas>
+			<!--input id=dec_foreColor type=color style="vertical-align: middle;" oninput="set_color(this.value); document.execCommand('foreColor', false, this.value);"!-->
+			<!--input id=dec_backColor type=color style="vertical-align: middle;" oninput=" document.execCommand('backColor', false, this.value)"!-->
+		</td>
+		
+		<!-- undo button  !-->
+		<td id=undo style="padding-left: 4px; padding-right: 4px;">
+			<button id=dec_undoredo class='toolbar_button onClickDecTarget' >
+				<font id=undo_symbol><img src=images.folder/undo.svg class='darkfilter heightonepointfive' draggable=false></font>
+			</button>
+			<div id=hh_undo_counter contenteditable=true tabindex=-1 oninput="hh_undo_counter_input()" onkeydown="event.preventDefault();">0</div>
+		</td>
+		
+		<!-- hamburger menu !-->
+		<td id=burger 
+			onmouseleave="if (event.target===this && !this.contains(document.activeElement)) { this.classList.remove('display'); }"
+			>
+			
+			<!--font size=4 style="pointer-events: none;">&#9776;</font!-->
+			<img src=images.folder/triplebond.svg class='darkfilter heightonepointtwo' style='padding-right: 4px;' draggable=false>
+			
+			<!-- burger menu, which is a table -->
+		 	<div id=burger_menu class='onClickGoToFile'>
+				<table>
+					<tr class='burger_menu_top_row'>
+						<td id=newnote class='burger_menuitem onClickNewBlankFile'><img src=images.folder/file.svg class='darkfilter heightone'>+</td>
+						<td id=print class='burger_menuitem onClickPrint onClickCloseBurgerMenu'><img src=images.folder/printer.svg class='darkfilter heightone'></td>
+						<td id=recycle class='burger_menuitem onClickClearLocalStorage onClickCloseBurgerMenu'><img src=images.folder/recycle.svg class='darkfilter heightone'></td>
+						<td id=account class='burger_menuitem onClickAccountMenu onClickCloseBurgerMenu'  onclick="show_modal_dialog();"><img class="darkfilter heightone" src="images.folder/account.svg" draggable="false"></td>
+						<td id=upload class='burger_menuitem onClickUploadAll onClickCloseBurgerMenu' ><img class="darkfilter heightone" src="images.folder/uparrow.svg" draggable="false"></td>
+						<td class='burger_menuitem onClickCloseBurgerMenu' id=home data-filename='.' style="padding-right: 0.75em;" >
+							<span><img src=images.folder/home.svg class='darkfilter heightone'></span>
+							<span class="burger_menuitem_save" style="font-size:14px;">•</span>
+						</td>
+					</tr>
+					
+					<!-- Managed file list !-->
+					<tr><td colspan=6 style="padding: 0px;"><div id=burger_filelist>...</div></td></tr>
+					
+				</table>
+			</div>
+			</td></tr>
+
+			<!-- second toolbar !-->
+			<tr id=texttr class=toolbar_tr style="xtext-align: left; z-index: 10;" >
+				<td id=texttd colspan=6>
+					<div id=texttoolbardiv style="display: inline-block; overflow: hidden;"></div>
+				</td>
+			</tr>
+		</table>
+			
+			<style></style>
+		
+		<!-- painting cursor !-->
+		<div id=contentareacursor class=hidden>
+			<svg height=20 width=33 class=absolutecorner>
+				<circle id=contentareacursor_dot cx=15 cy=15 r=2 />
+			</svg>
+			<svg id=contentareacursor_pen class='darkfilter absolutecorner' height=18 width=32>
+				<image href=images.folder/pen.svg x=15 y=0 width=16 height=15 />
+			</svg>
+		</div>
+			
+		<!-- modal dialog. !-->
+		<div id=modal class='hide'>
+			<div id=backdrop class='xhide absolutefill' onclick="modal_backdrop_click();"></div>
+			<div id=frontdrop>
+				<div id=dialog class='container window dialog' onclick="dock_modal_dialog(false);"> 
+					<div id=modaliframebuttons>
+						<button onclick="hide_modal_dialog()" class=onClickCloseThisWindow></button>
+					</div>
+					<iframe id=modaliframe></iframe>
+					
+					<div id=modalbuttonstop>
+						
+						<div style="display: flex; align-items: center; flex-wrap: wrap;">
+							<div style="flex:1; xwhite-space: pre-wrap; " id=modaltitle></div>
+							<button onclick="dock_modal_dialog(true); event.stopPropagation();">–</button>
+							<button onclick="hide_modal_dialog()">X</button>
+						</div>
+					</div>
+					
+					<div id=modaltext contenteditable=true spellcheck=false >
+					</div>
+					<div id=modalbuttonsbottom style="text-align:right;">
+						<!--button onclick="dock_modal_dialog(true); event.stopPropagation();">Dock</button!-->
+						<button onclick="hide_modal_dialog()">Cancel</button>
+						<button onclick="hide_modal_dialog(true)">Save Changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</th>
+	</tr>
+			
+	</thead>
+	
+	<tbody>
+		
+	<!-- content area !-->
+	<tr id=contenttr height=99%>
+		<td id=contentareatd valign=top>
+			<div id=contentarea>
+				<div id=contentareafile>
+					<div id=contentareaheader></div>
+					<div id=contentareagutter></div>
+					<div id=contentareainner></div>
+					<div style="clear: both;"></div>
+				</div>
+				<div id=contentareaants class=absolutefill></div>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+		
+</table>
+	
+<div id=contentareapaintoverlay ontouchmove="event.preventDefault();"></div>
+
+<div id=floating_footer>
+	<div style="position: absolute; left: 0px; right: 0px; bottom: 0px;">
+		<div id=version></div>
+		<table id=bottom_table width=100% cellspacing=0 style="border-collapse: collapse;">
+			
+			<tr id=cookie_message style="display: none;"><td>
+				<div>
+					Hyperhello content is submitted from the users of this site. Cookies are used where strictly necessary for functionality.
+					<button style='float:right; font-weight: bold;' onclick='close_cookie_message();'>Okay</button>
+					<div style="clear:both;"></div>
+				</div>
+			</td></tr>
+		</table>
+	</div>
+</div>
+
+<script>
+	document.querySelector('#texttoolbardiv').innerHTML = document.querySelector('#textdetails').innerHTML;
+	document.querySelector('#bottom_table tbody').appendChild(document.querySelector('#texttr'));
+	document.querySelector('#texttr').style.borderTop = '1px solid var(--toolbar-glass-color)'
+</script>
+
+<div id=contentandgutterexample style=display:none;>
+<!-- BEGIN CONTENT EXAMPLE !-->
+<section id="contentexample"> 
+
+	<div>Welcome to Hyperhello. Hit <button class='gutter onClickNewBlankFile '><img src=images.folder/file.svg class='gutter darkfilter heightonepointtwo'>+</button> in the menu to make a new blank document. This page allows you to edit itself, so it's a work in progress.</div>
+	<div><br></div>
+	<div>Tools: <img src=images.folder/hand.svg class='gutter heightone darkfilter'> browse, <img src=images.folder/textcaret.svg class='gutter heightone darkfilter'> type, <img src=images.folder/pen.svg class='gutter heightone darkfilter'> draw, <img src=images.folder/undo.svg class='gutter heightone darkfilter'> undo, <img src=images.folder/triplebond.svg class='gutter heightone darkfilter'> files/cloud/print/etc.<br></div>
+	<div><br></div>
+	<div>Typing <img src=images.folder/textcaret.svg class='heightone darkfilter'> lets you type and select to use styles and color. You can also paint with the pen <img src=images.folder/pen.svg class='heightone darkfilter'> and the path pushes text out of the way. To select a pen stroke or an object, tap with <img src=images.folder/textcaret.svg class='heightone darkfilter'>.<br></div>
+	<div><br></div>
+	Here are some <img src=images.folder/chain.svg class='heightone darkfilter'> links to travel to. If a page doesn't exist on this site you still can travel and use the toolbar to edit there, or try editing here.<br>
+&nbsp;<div class="gutter window container" data-hh-title="Links">
+	<a href=hyphenated-link>hyphenated-link</a><br>
+	<a href=user/test/folder/subfolder/ >user/test/folder/subfolder/</a><br>
+	
+	<!--div>Left?<button class="gutter onClickBeep left"><img src="images.folder/bill.png" draggable="false"><br>Be—eep</button><div class=left></div></div>
+	<button class="gutter onClickBeep left"><img src="images.folder/bill.png" draggable="false"><br>Be—eep</button!-->
+	<a href=user/Bill/ >user/Bill/</a><br>
+	<a href=user/Bill/file>user/Bill/file</a><br>
+	<a href=user/Bill/hypercard/ >user/Bill/hypercard/</a><br>
+	<a href=https://en.wikipedia.org/wiki/HyperCard>Hypercard Wiki</a> (a link to the web)<br>
+	<!--I think there should be an intuitive, reliable tool for this purpose and I'm constantly improving and debugging to make the vision a reality. If you have comments or questions just !--><a id=emailme>Email</a> me.<br>
+	<script>document.getElementById('emailme').href='mai'+'lto:hell'+'o'+'@'+'hyperhello.c'+'om';</script>
+</div>
+	<div><br></div>
+Hyperhello is also a web app that works in airplane mode. Just select Add to Homescreen in the mobile menu.
+	<div><br></div>
+	
+	<div><br></div>
+
+	<div>Boilerplate:<br></div>
+	
+	<font size=2> "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</font>
+
+	<div><br></div>
+	
+	<section> <code>Section</code>: <div>"first subcontained"</div> <div>"subcontained number two"</div> <code>end</code> </section> 
+	<div><br></div>
+	
+	<div><B><font size=-1> "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</font></B></div>
+
+	<div class='container window gutter'>
+		There was a Youtube here, but it was using their bandwidth so it got cut.
+		<!--label class=gutter data-youtube="d9994nv8BcU"></label!-->
+	</div>
+	<button class='gutter onClickAboutThisApp'>About this Page…</button>
+
+	<div><br></div>
+	<div>
+	<I><font size=-1> "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</font></I></div>
+	<div><br></div>
+
+	<U><font size=-1> "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil <font color=red background-color=green><S>impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe</S></font> eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</font>
+	
+	</U>
+
+	<div><br></div>
+	<font color=orange background=#EFF>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</font>
+
+	</section>
+
+<!-- BEGIN GUTTER EXAMPLE !-->
+<section id="gutterexample">
+	
+	<div class='gutter spacer left'><br><br><br><br></div>
+	<div class='gutter spacer right'></div>
+
+	<svg class="gutter right" viewBox="-163 0 164 145" preserveAspectRatio="xMaxYMin slice" width="164">
+		<path d="M-70,61 Q-70,64,-68,68 Q-65,72,-61,73 Q-59,74,-57,74 Q-54,74,-50,72 Q-47,69,-44,66 Q-41,64,-39,61 Q-37,59,-35,57 L-33,52 L-32,52 L-32,51 L-32,50 L-31,50 L-31,50 L-31,50 L-31,50 "></path><path d="M-59,38 Q-59,39,-59,42 Q-58,44,-57,45 Q-56,46,-56,46 Q-55,44,-54,42 Q-52,39,-52,38 Q-51,37,-51,37 Q-51,36,-52,36 Q-54,35,-55,34 L-55,34 L-55,34 L-56,34 L-56,34 L-56,34 "></path><path d="M-40,32 Q-40,34,-40,37 Q-40,40,-40,42 Q-39,43,-38,43 Q-37,43,-37,43 Q-35,42,-35,41 Q-34,40,-33,39 Q-33,38,-33,36 Q-35,33,-37,31 L-40,30 L-40,30 L-41,30 L-41,30 L-41,30 L-41,30 "></path><path stroke="#eabe41" d="M-35,17 Q-37,17,-42,17 Q-47,17,-50,17 Q-55,17,-59,17 Q-62,17,-64,18 Q-65,18,-67,18 Q-69,18,-72,19 Q-75,20,-78,22 Q-81,26,-85,29 Q-87,32,-89,34 Q-91,37,-93,40 Q-94,43,-95,46 Q-95,51,-95,57 Q-95,62,-95,67 Q-94,70,-94,73 Q-93,74,-92,76 Q-91,79,-88,83 Q-86,85,-84,86 Q-81,87,-77,87 Q-72,88,-70,88 Q-68,89,-66,89 Q-62,89,-58,89 Q-55,89,-51,89 Q-48,89,-45,88 Q-41,86,-38,85 Q-37,84,-35,83 Q-33,81,-31,79 Q-28,77,-25,75 Q-23,73,-20,71 Q-19,69,-17,67 Q-15,64,-14,62 Q-13,59,-12,56 Q-10,52,-9,47 Q-8,44,-8,41 Q-8,39,-8,38 Q-9,36,-12,33 Q-13,32,-13,31 Q-14,30,-15,28 Q-16,27,-17,26 Q-18,25,-19,24 Q-21,23,-22,23 Q-23,23,-25,22 Q-26,22,-27,22 Q-28,21,-29,20 Q-30,19,-31,19 Q-32,19,-34,18 L-35,18 L-36,18 L-36,18 L-36,18 L-36,18 L-36,17 L-37,17 L-37,17 L-37,17 L-37,17 "></path>
+	</svg>
+
+	<div class='gutter spacer right'></div>
+	<label class='gutter right darkfilter' data-image="images.folder/home.svg"></label>
+	
+	<label class='gutter left darkfilter' data-image="images.folder/pen.svg"></label>
+
+	<div class='gutter right spacer'><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+			
+	<div class="gutter container window right" data-hh-title="This is a floating window"><button class=onClickCloseThisWindow></button>Still hacking on these windows.<br>We Need Version Control!
+		"Typing's school. I like typing."<br>
+		<span class=red>red</span> <span class=green>green</span> <span class=purple>purple</span> 
+		
+		<table>
+			<tr><td><div class="gutter field orange">Field in a table</div></td><td><button class='gutter'>Top Button</button></td></tr>
+			<tr><td><div class="gutter field blue">Another field</div></td><td><button class='gutter'>Middle Button</button></td></tr>
+			<tr><td><div class="gutter field green">This third field </div></td><td><button class='gutter'>Last Button</button></td></tr>
+		</table>
+		
+		<button class='gutter right'>Right Button</button>
+	 	<div class="gutter field purple">Full width Field</div> 
+
+		<div class='gutter container window left'><button class=' onClickCloseThisWindow'></button>1<br> 2<br> 3<br> 4<br> 5<br> 6<br> 7<br> 8<br> 9<br> 10<br> </div> 
+
+		<div class='gutter container window'><button class=' onClickCloseThisWindow'></button>11<br> 12<br> 13<br> 14<br> 15<br> 16<br> 17<br> 18<br> 19<br> 20<br> </div> 
+		
+		
+			
+		</div>
+
+	<!-- puts the insertion point back on the edge !-->
+	<div class='gutter right'><br><br><br><br><br><br><br><br><br><br></div>
+		
+	<!-- puts the insertion point back on the edge !-->
+
+	<!-- Bill left, palette right !-->
+	<div class='gutter left spacer'><br><br></div>
+	<label class="gutter left" data-image="images.folder/bill2.svg"></label>
+	<div class='gutter left'><br><br><br><br><br><br><br><br><br><br></div>
+	
+	<div class="gutter container window right">
+		
+		<button class='onClickCloseThisWindow'></button> 
+		<label class="gutter"><input type="checkbox" checked>&nbsp;<b>Checkbox</b></label> 
+		<label class="gutter"><input type="color" value=#abcdef></label> 
+		<label class="gutter"><input type="range" value=75></label>
+		<label class="gutter"><button class='onClickBeep'>&#x1f50a;Beep!</button></label>
+		
+	</div>
+</section>
+</div>
+	
+<script>
+var modal_element, modal_show_time;
+function show_modal_dialog(element)
+{
+	modal_element = element;
+	modal_show_time = Date.now();
+	//document.querySelector('#modaltext').innerText = modal_element.outerHTML/*.replace(/>/g,">\n")*//*.replace(/<\//g,"\n</")*/;
+	document.querySelector('#modaltext').style.display = element ? 'initial' : 'none';	
+	document.querySelector('#modalbuttonstop').style.display = /*element ? 'initial' :*/ 'none';	
+	document.querySelector('#modalbuttonsbottom').style.display = element ? 'initial' : 'none';	
+	document.querySelector('#modaliframe').style.display = element ? 'none' : 'initial';	
+	document.querySelector('#modaliframebuttons').style.display = element ? 'none' : 'initial';	
+	document.querySelector('#modal').classList.toggle('hide',false);
+	document.querySelector('#backdrop').classList.toggle('hide',false);
+	document.querySelector('#frontdrop').classList.toggle('rightside',!modal_element);
+	document.body.classList.add('block_scrolling');
+	if (modal_element)
+	{
+		var faux = generate_faux_from_node(modal_element);
+		document.querySelector('#modaltext').innerText = JSON.stringify(faux,null,' ');	
+		document.querySelector('#modaltitle').innerText = faux.tag + (faux.class||'').split(' ').map((c)=>"."+c).join('');
+		document.querySelector('#modaltext').focus();
+		document.querySelector('#dialog').dataset.hhTitle = faux.tag //+ (faux.class||'').split(' ').map((c)=>"."+c).join('');
+	}
+	else
+	{
+		document.querySelector('#modaliframe').src = 'Server.Identity?querytime='+Date.now();	
+		delete document.querySelector('#dialog').dataset.hhTitle; // = "Account";
+	}
+	dock_modal_dialog(false);
+}
+function save_modal_dialog()
+{
+	var json = JSON.parse(document.querySelector('#modaltext').innerText);
+	var crazy = generate_node_from_faux(json);
+	if (crazy)
+	{
+		content_virtual_dom.BeginUndoableMutations();
+		gutter_virtual_dom.BeginUndoableMutations();
+		modal_element.parentNode.replaceChild(crazy,modal_element);
+		content_virtual_dom.FinishUndoableMutations(true);
+		gutter_virtual_dom.FinishUndoableMutations(true);
+		modal_element = crazy;
+	}
+	//crazy = generate_node_from_faux(generate_faux_from_node(crazy));
+}
+function hide_modal_dialog(doSave)
+{
+	//outerHTML = document.querySelector('#modaltext').innerText;
+	if (doSave)
+	{
+		try 
+		{
+			save_modal_dialog();
+		}
+		catch(e) { if (!confirm(e)) return; }
+	}
+	document.querySelector('#modal').classList.toggle('hide',true);
+	document.querySelector('#backdrop').classList.toggle('hide',true);
+	document.body.classList.remove('block_scrolling');
+
+	dock_modal_dialog(false);
+	document.body.classList.remove('show_backdrop');
+	if (!modal_element)
+	{
+		document.querySelector('#modaliframe').src = "";	
+	}
+	document.querySelector('#frontdrop').classList.toggle('rightside',!modal_element);
+	modal_element = null;
+	modal_show_time = null;
+}
+function modal_backdrop_click()
+{
+	if (Date.now() > modal_show_time+350) (modal_element ? dock_modal_dialog(true) : hide_modal_dialog());
+}
+function dock_modal_dialog(doDock)
+{
+	doDock=false
+	if (doDock) 
+	{
+		document.querySelector('#frontdrop').style.top = "90vh"; 
+		document.querySelector('#frontdrop').style.transform = "translate(-50%,0%)";
+		document.querySelector('#backdrop').classList.toggle('hide',true);
+	}
+	else
+	{
+		document.querySelector('#frontdrop').style = '';
+	}
+	document.body.classList.toggle('show_backdrop',!doDock && !!modal_show_time);
+}
+function has_modal_dialog()
+{
+	return !!modal_show_time;
+}
+function has_modal_overlay()
+{
+	return !!(modal_element && !document.querySelector('#backdrop').classList.contains('hide'));
+}
+</script>
+
+<script>
+function scroll_to_contentarea_selection()
+{
+	//console.trace();
+	var range = new Range(), wgs = window.getSelection();
+	if (ca && ca.contains(wgs.focusNode))
+		{
+			if (wgs.focusNode.nodeType===1) 
+				range.setStart(wgs.focusNode.childNodes[wgs.focusOffset], 0)
+			else
+				range.setStart(wgs.focusNode, wgs.focusOffset);
+			range.collapse(true);
+			
+			var r_bcr = range.getBoundingClientRect(), h_bcr = toolbarth.getBoundingClientRect(), f_bcr = bottom_table.getBoundingClientRect();
+			if (r_bcr.height == 0) { console.log('browser says (r_bcr.height == 0)',range); return; }	// safari bug fixed by the above focus gibberish, chrome not fixed yet
+			/*else if (r_bcr.top < h_bcr.bottom) window.scrollBy(0,r_bcr.top - h_bcr.bottom - 8);
+			else if (r_bcr.bottom > f_bcr.top) window.scrollBy(0,r_bcr.bottom - f_bcr.top + 8);*/
+			
+			var by = [ 
+				(r_bcr.left < h_bcr.right) ? (r_bcr.left - h_bcr.right - 8)
+				: (r_bcr.right > f_bcr.left) ? (r_bcr.right - f_bcr.left + 8) 
+				: 0,
+				(r_bcr.top < h_bcr.bottom) ? (r_bcr.top - h_bcr.bottom - 8)
+				: (r_bcr.bottom > f_bcr.top) ? (r_bcr.bottom - f_bcr.top + 8) 
+				: 0
+			];
+			
+			if (by[0] || by[1])
+			{
+				var smooth = Math.abs(by[0])+Math.abs(by[1])>40;
+				window.scrollBy({left: by[0], top: by[1], behavior: smooth?'smooth':'auto'}) ;
+				setTimeout(viewport_catchup, smooth ? 250 : 0);	// this will bring the toolbars and palettte back to positions
+			}
+			
+		}
+}
+
+document.body.addEventListener('keyup',(event)=>{ /*console.log(event.keyCode);*/ if ([16,17,18,27,91].indexOf(event.keyCode)==-1) scroll_to_contentarea_selection(); });	// want this for arrow keys and typing, but not mod keys or esc
+	
+// hmm, we want this when you focus and the keyboard comes up, but don't do that when you scroll...below doesnt work because it keeps the focus
+//contentareainner.addEventListener('focus',(event)=>{ setTimeout(()=>{ if (!is_pressed_in_catd) scroll_to_contentarea_selection() }, 1000) });
+// try this instead
+var vp_height = 0;
+if (window.visualViewport) window.visualViewport.addEventListener('resize',(event)=>{ 
+	if (vp_height - window.visualViewport.height > 150)		// sudden loss of viewport height might be keyboard appearance
+	setTimeout(()=>{ scroll_to_contentarea_selection() }, 0) 
+	vp_height = window.visualViewport.height;
+});
+	
+</script>
+	
+	
+<script>
+"use strict";
+
+var ca = document.querySelector('#contentarea'),
+	cai = document.querySelector('#contentareainner'),
+	caa = document.querySelector('#contentareaants'),
+	cag = document.querySelector('#contentareagutter'),
+	catd = document.querySelector('#contentareatd'),
+	content_virtual_dom = new VirtualDOM(cai),
+	gutter_virtual_dom = new VirtualDOM(cag),
+	is_mouse_in_catd = false,
+	is_pressed_in_catd = false,
+	use_service_worker = false;		// nice to turn it off during development, maybe make this a query param
+
+function show_cookie_message()
+{
+	document.getElementById('cookie_message').style.display = 'block';
+}
+function close_cookie_message()
+{
+	localStorage.setItem('allow_cookies','true'); 
+	document.getElementById('cookie_message').style.display = 'none';
+	hh_queue_autostore();
+}
+
+hh_init();
+
+if (hh.standalone)
+{
+	localStorage.setItem('allow_cookies',true);
+	use_service_worker = true;	// turn it on for standalones
+}
+
+//if (!hh.safari)
+	//use_service_worker = true;	// turn it on for everything but safari
+
+if (!use_service_worker && hh.connected)	// put this before any possible script failures. howver what if we push a bad script file??
+	navigator.serviceWorker.getRegistrations().then(registrations => { registrations.forEach((r)=>r.unregister()); });
+
+if (!localStorage.getItem('allow_cookies'))
+	show_cookie_message(); 
+
+function check_for_username_change(force_change)	// called by account popup and by page when visibility changes
+{
+	var username_cookie, left_owned_page;
+	try { username_cookie = atob(getCookie('username')); } catch(e) {}
+	if (!force_change)
+	{
+		if (hh.username == username_cookie) return;
+		close_cookie_message();
+		left_owned_page = hh.username && (hh.url.user == hh.username);
+	}
+	document.body.classList.toggle('hh_loggedin', !!(hh.username=username_cookie));
+	Object.keys(hh.files).forEach((k)=>{ if (k != '.' && !(hh.files[k].changes && hh.files[k].changes.dirty)) delete hh.files[k]; });
+	list_files_from_server();
+	if (left_owned_page) hh_go_to_page('.');
+	else hh_go_to_page(hh.url.href);
+}
+
+cai.contentEditable = true;
+cai.focus();
+document.execCommand("defaultParagraphSeparator", false, "<br>")
+document.execCommand("insertBrOnReturn", false, true);
+document.execCommand("styleWithCSS", false, false);
+cai.contentEditable = false;
+
+window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+	console.log('changed to ' + (e.matches ? "dark" : "light") + ' mode');
+	hh_selection_properties();
+});
+
+receive_files({ 
+	'.': { file: { 
+			content: generate_faux_from_node(document.getElementById('contentexample')),
+			gutter: generate_faux_from_node(document.getElementById('gutterexample')) 
+			} }
+});
+document.getElementById('contentandgutterexample').parentNode.removeChild(document.getElementById('contentandgutterexample'));
+
+document.body.setAttribute('data-hh-tool', hh.tool=(hh_get_state('tool','.')||'user'));
+set_color(hh_get_state('color','.'));
+
+hh_url_properties(location.href, true);
+//console.log('hh.connected = '+hh.connected);
+
+//console.log(hh.url);
+document.body.onload = function() 
+{
+	viewport_catchup();
+
+	//if (!hh.testbed) this.focus();
+}
+
+content_virtual_dom.ChangedCallback = gutter_virtual_dom.ChangedCallback = function(changerange) 
+{
+	//console.log('ChangedCallback',this);
+	var entry = hh.files[hh.url.href || '.'];
+	
+	entry.changes = entry.changes || {};
+	entry.changes.content = content_virtual_dom.faux;	// direct reference
+	entry.changes.gutter = gutter_virtual_dom.faux;	// direct reference
+	entry.changes.dirty = true;	
+	entry.changes.unstored = true;	
+	
+	var newblurb = hh_short_name_from_text(cai.innerText);
+	if (newblurb != entry.changes.blurb)
+	{
+		entry.changes.blurb = hh_short_name_from_text(cai.innerText);	
+		hh_list_files_in_menu();
+	}
+	
+	hh_check_files_in_menu();
+	hh_queue_autostore();	
+};
+
+if (hh.connected) 	// this means whether the page was served, not whether the internet is available
+{
+	if ('serviceWorker' in navigator)
+	{
+		var chrome_refresh;
+		if (use_service_worker)
+		{
+			navigator.serviceWorker.register("LS_SW.js");
+			navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if (!chrome_refresh) window.location.reload(true); chrome_refresh = true; });
+		}
+		else
+		{
+			navigator.serviceWorker.getRegistrations().then(registrations => { registrations.forEach((r)=>r.unregister()); });
+		}
+	}
+	['online','offline'].forEach((t)=>window.addEventListener(t, (event) => console.log(t/*,navigator.onLine*/)));
+
+	document.body.onbeforeunload = function() {
+		// does this always work? What circumstances? 
+		hh_store_locally();
+		// we don't have hh_dirty anymore unless the changed files are owned, so never mind the unsaved data.
+		// Actually, now you can be logged in but not allowing cookies, so fine, never mind, we'll leave it in.
+		if (document.body.classList.contains('hh_dirty') && !localStorage.getItem('allow_cookies')) {
+			// if we can't save the data, tell 'em
+			return "Unsaved data on page";
+		}
+	}; 
+
+	check_for_username_change(true);
+//	list_files_from_server();
+	hh_go_to_page(location.href, true);
+}
+else 
+{
+	hh.username='LoggedInUser';
+	receive_files({ 
+		'$123': { changes: { blurb: "Blurbie", content: { _:[ { tag:'DIV',_:[ "Blurbie. This is Blurbie One." ] }, { tag:'BUTTON',class:'gutter',_:[ "Gutter button." ] }, { tag: 'DIV', _:[ {tag:'BR'} ] } ] }, 
+			gutter: { _:[ { tag: 'SVG', class: 'right gutter', _:[] }, { tag: 'LABEL', class: 'right gutter selected', 'data-image': 'images.folder/bill.svg' } ] } } }, 
+		'One': { file: { content: { _:[ "one" ] }, gutter: { _:[] } } }, 
+		'Bane': { file: { content: { _:[ {tag:'LABEL',class:'gutter',"data-youtube":"d9994nv8BcU" } ] }, gutter: { _:[] } } }, 
+		//'Threeeeeee < pi point three four five': {}, 
+		'Changed Dirty': { changes: { dirty: true } } ,
+		'user/LoggedInUser/': { changes: { dirty: true } }, 
+		'user/LoggedInUser/Folder/': { file: { content: { _:[ "one" ] }, gutter: { _:[] } } }, 
+		'user/LoggedInUser/Folder/File': { changes: { dirty: true } }, 
+		'user/LoggedInUser/Folder2/Folder2IndentBugFixed': { file: { content: { _:[ "one" ] }, gutter: { _:[] } } }, 
+		'user/BobsLoggedOut/Folder': { file: { content: { _:[ "Hey" ] }, gutter: { _:[] } } }, 
+		'Z4': { changes: { dirty: true } }, 
+		'Z5': { changes: { dirty: true } }, 
+		'Z6': { changes: { dirty: true } }, 
+		'Z7': { changes: { dirty: true } }
+	});
+	hh.tool = 'type'; hh_go_to_page('.', true);
+	//hh.tool = 'paint'; hh_go_to_page('.', true);
+}
+	 
+// this seems to be enough to notice when cookies were deleted or you're logged out in another tab, as long as you're not staring at the page in question (might need to have a watcher on localstorage if that still exists)
+document.addEventListener("visibilitychange", function() { check_for_username_change(); }, false);
+
+window.onpopstate = function() { hh_go_to_page(location.href, true); }
+
+cai.oninput = function() { 
+	if (event.target.matches('input')) content_virtual_dom.mark(event.target); 
+	// I would like a keystroke or anything else that causes text to be inserted to switch back to text mode
+	//if (hh.tool == 'paint') hh_set_tool('type');	// this isn't helpful. need input with a *change*... 
+}
+cag.oninput = function() { 
+	if (event.target.matches('input')) gutter_virtual_dom.mark(event.target); 
+	//if (hh.tool == 'paint') hh_set_tool('type');	// this isn't helpful. need input with a *change*... 
+}
+
+document.onselectionchange = function() { 
+	hh_selection_properties(); 	
+	/*if (document.activeElement !== cai || cag.querySelector('.gutter.selected, svg.gutter path.selected')) 
+		return;*/
+		
+	/* this is running twice causing different values to update_dec_dialog */
+	/* need a way to signal this handler that the selected items are what they are */
+	
+	// #1 check for any elements that touch the text selection
+	var first_found;
+	cai.querySelectorAll('img, .gutter:not(svg)').forEach((s)=>{
+		var isSel = hh.wgsr && (hh.wgsr.isPointInRange(s,0) || hh.wgsr.isPointInRange(s,s.childNodes.length));
+		s.classList.toggle('selected', isSel); 
+		first_found = first_found || (isSel && s);
+	});
+
+	if (!first_found)
+	{
+		//return;
+		
+		var sel = hh.wgsr && hh.wgsr.commonAncestorContainer;
+		if (sel && !sel.closest)
+			sel = sel.parentNode;
+		if (sel && sel.closest && (sel=sel.closest('.gutter:not(svg), svg.gutter path')))
+			{
+				//cai.querySelectorAll('.gutter.selected').forEach((s)=>s.classList.remove('selected'));
+				//sel.classList.add('selected');
+				//show_modal_dialog(sel);
+				first_found = sel;
+				first_found.classList.add('selected'); 
+				return;
+			}
+	} 
+
+	setTimeout(()=>update_dec_dialog(first_found), 1);
+	//console.log('osc',hh.wgsr);
+
+	
+}
+
+function update_dec_dialog(first_found)
+{
+	document.querySelectorAll('#dec_dialog').forEach((d)=>{ 
+		
+		if (first_found && first_found.matches('A'))
+			d.innerHTML = "<img src=images.folder/chain.svg class='darkfilter heightone'>";
+		else if (first_found && first_found.nodeName == ('path'))
+			d.innerHTML = "<img src=images.folder/pen.svg class='darkfilter heightone'>";
+		else if (first_found && (first_found.matches('IMG,label[data-image]')))
+			d.innerHTML = "<img src=images.folder/mountains.svg class='darkfilter heightone'>";
+		else if (first_found && first_found.matches('div.window'))
+			d.innerHTML = "window";
+		else if (first_found && first_found.matches('div.field'))
+			d.innerHTML = "field";
+		else if (first_found && first_found.matches('input'))
+			d.innerHTML = "input";
+		else
+			d.innerText = first_found ? first_found.nodeName.toLowerCase() : "{ }" 
+	});
+
+}
+				
+document.onclick = function(event) { hh_event_properties(event); create_clicked_activity(event); }
+
+var deferredPrompt; 
+window.addEventListener('beforeinstallprompt', function (e) { deferredPrompt = e; }); 
+
+document.addEventListener('pointerdown', function(event) { hh.pointerType = event.pointerType; });
+
+/* awful. I think we need to track viewport properties in hh_event_properties and just do this on changes.
+	(1) adjust toolbar in event properties
+	(2) clean up css trash
+	(3) separate modals for login and json
+	(4) still this is really great and 0.1.7 is a very big leap
+	(5) make sure service worker re-registers if the page doesn't finish loading
+	(6) pen problems with ipad
+	(7) selecting table nodes rearranges them for some reason
+	(8) z-index of gutter windows the same, z-index of images and svgs IN gutter windows higher
+	(9) now pen is not visible over gutter objects, need to make target #overlay OR allowed types
+	(10) offsetleft does include translation I think, overlay is in wrong place. No it's not that, it's that the overlay doesn't move with the toolbar, it's bound to the page. I guess we need to adjust it too
+*/
+
+var vvcount = 0;
+function viewport_catchup(event)
+{
+	if (event)
+		{
+			hh_event_properties(event);
+			if (document.body.classList.contains('block_scrolling'))
+				event.preventDefault();
+		}
+	
+	if (hh.pressed_activity) hh.pressed_activity(); 
+	else if (hh.hover_activity) hh.hover_activity();
+	if (!hh.viewport) return;
+
+	//console.log(event.target, event.type, vvcount);
+	//https://www.quirksmode.org/mobile/viewports.html
+	
+	// this simulates device-fixed, which is tricky and exposes plenty of browser issues. the pan and scroll, and the browser font size shortcuts cmd - and cmd +, work consistently on safari desktop. It's not always right in ipad, so I decide that when there is inconsistency, pan and scroll is the priority over the font size spinner in the url menu
+	
+	toolbarth.style.transform = "translate3D(" + hh.viewport.offsetLeft + "px,"+hh.viewport.offsetTop+"px,0px) scale(" + /*1+Math.max(1,*/ (1/hh.viewport.scale) + ')';
+
+	floating_footer.style.transform = "translate3D(" + Math.max(0,hh.viewport.offsetLeft) + "px,"+Math.max(0,hh.viewport.offsetTop)+"px,0px) scale(" + 1/hh.viewport.scale + ')';
+	floating_footer.style.height = hh.viewport.scale*hh.viewport.height+'px';
+	
+	contentareapaintoverlay.style.left = document.getElementById('paint').offsetLeft/hh.viewport.scale + hh.viewport.offsetLeft + 'px';
+	// i tink this needs to go through the rewst of the event path
+	document.querySelector('#modal #dialog').style.maxHeight = "calc(" + hh.viewport.height*hh.viewport.scale + "px - 1em)"
+	
+	//requestAnimationFrame(()=>{});
+	
+	if (vvcount++ >= 100 && !(vvcount%1000)) console.log('vvcount is ' + vvcount);
+
+}
+
+
+if (window.visualViewport)
+{
+	window.visualViewport.addEventListener('scroll', viewport_catchup, {passive:true});	// not complete without
+	window.visualViewport.addEventListener('resize', viewport_catchup, {passive:true});	// not complete without
+}
+				
+window.addEventListener('scroll', viewport_catchup, {passive: true});
+document.addEventListener('scroll', viewport_catchup, {passive: true});
+	
+window.addEventListener('resize', viewport_catchup, {passive: true});
+	//window.addEventListener('wheel', ()=>{}, {passive: true}) 
+	// merely listening to the wheel event causes bounce jitters on safari
+/*if (!hh.safari)*/ window.addEventListener('wheel', viewport_catchup, {passive: true});
+
+window.addEventListener('gesturestart', function() {});
+window.addEventListener('gesturechange', function() {});
+	
+	//window.onscroll = viewport_catchup;
+	//ca.addEventListener('scroll', viewport_catchup, {passive: true});
+	
+	// https://medium.com/@auchenberg/detecting-multi-touch-trackpad-gestures-in-javascript-a2505babb10e
+				
+				
+
+// ca.onscroll might be needed
+//window.onscroll = ca.onscroll = function(event) { hh_event_properties(event); if (hh.pressed_activity) hh.pressed_activity(); else if (hh.hover_activity) hh.hover_activity(); }
+
+function set_mouse_in_catd(isOn)
+{
+	if (is_mouse_in_catd!=(is_mouse_in_catd=isOn))
+	{
+		if (hh.hover_activity)
+		{
+			hh.hover_activity(true);
+			hh.hover_activity = null;
+		}
+		if (isOn)
+		{
+			if (hh.hover_activity=create_hover_activity())
+			{
+				hh.hover_activity();
+			}
+		}
+	}
+}
+function set_pressed_in_catd(isOn,event)
+{
+	if (is_pressed_in_catd!=(is_pressed_in_catd=isOn))	
+	{
+		if (hh.pressed_activity)
+		{
+			hh.pressed_activity(true);
+			hh.pressed_activity = null;
+		}
+		if (isOn)
+		{
+			if (hh.pressed_activity=create_pressed_activity(event))
+			{
+				hh.pressed_activity();
+			}
+		}
+	}
+}
+
+var defaultPrevented, supportClickThrough;
+var downloc, down_target, down_time;
+var polyfill_event_detail = true, polyfill_event_detail_number = 0;
+
+window.onmousedown = window.ontouchstart = function(event) { 
+//try {
+	if (!hh.AudioContext)	// wait for user interaction to start an audio context
+		hh.AudioContext = new (window.AudioContext || window.webkitAudioContext || function(){})({ latencyHint: 'interactive' });
+
+	defaultPrevented = supportClickThrough = false;
+	if (event.detail === 2)
+		polyfill_event_detail = false;
+		
+	if (polyfill_event_detail && (down_target === hh.target) && (down_time > Date.now()-250))
+	{
+		polyfill_event_detail_number++;
+		//put(polyfill_event_detail_number);
+	}
+	else
+	{
+		polyfill_event_detail_number = 0;
+	}
+	
+	if (polyfill_event_detail)
+	{
+		event.detail_polyfill = polyfill_event_detail_number;
+	}
+	
+	event.preventDefault = function() { defaultPrevented = true; Event.prototype.preventDefault.call(this); }
+	hh_event_properties(event); 
+	if (!document.querySelector('#modal').contains(event.target) && has_modal_dialog()) dock_modal_dialog(true);
+	set_pressed_in_catd(true,event); 
+	supportClickThrough = event.supportClickThrough;
+	downloc = hh.state.fixed;
+	down_time = Date.now();
+	//put ((down_target === hh.target) ? 'same' : 'different');
+	down_target = hh.target;
+	//if (event.type=='touchstart') alert(['start', defaultPrevented,supportClickThrough,hh.target,hh.target.click])
+//} catch(e) { alert(e); }
+
+}
+window.onmouseup = window.ontouchend = function(event) { 
+//try {
+	if (polyfill_event_detail)
+	{
+		event.detail_polyfill = polyfill_event_detail_number;
+	}
+	
+	hh_event_properties(event); 
+	set_pressed_in_catd(false); 
+	//if (event.type=='touchend') alert(['end', defaultPrevented,supportClickThrough,down_target===hh.target,hh.target.click])
+	if (event.type=='touchend' && defaultPrevented) event.preventDefault(); 	// this cancels mousedown but also onclick, that is so annoying
+	if (event.type=='touchend' && supportClickThrough && down_target.click 
+		/*&& Math.pow(hh.mouse_fixed[0]-downloc[0],2)+Math.pow(hh.mouse_fixed[1]-downloc[1],2) < 100*/
+		&& down_target===document.elementFromPoint(hh.state.client[0], hh.state.client[1])
+		/*&& Math.pow(hh.mouse_fixed[0]-downloc[0],2)+Math.pow(hh.mouse_fixed[1]-downloc[1],2) < 100*/
+		)
+		{
+			// tricky, if you don't know which element you're clicking how do you know whether the finger has left it? elementFromPoint above might work
+			//alert('clicking ' + hh.target);
+			event.preventDefault();
+			hh.target.click();
+		}
+	hh.last_mouseup_state = hh.state;
+//} catch(e) { alert(e); }
+
+}
+
+document.body.onmouseenter = function(event) { hh_event_properties(event); if(event.srcElement===this) set_mouse_in_catd(true); } 
+document.body.onmouseleave = function(event) { hh_event_properties(event); if(event.srcElement===this) set_mouse_in_catd(false); } 
+
+window.onmousemove = window.ontouchmove = function(event) { 
+	hh_event_properties(event); 
+	hh_selection_properties(); 
+	if (hh.pressed_activity) hh.pressed_activity(); else if (hh.hover_activity) hh.hover_activity();  
+}
+
+// we might like to have a keydown_activity too for individual keys
+// grabbing key events would be useful for example when the burger menu shows you could use arrow keys to select a file
+document.body.onkeydown = function(event) {
+	hh_event_properties(event);
+	hh_selection_properties();
+	if (document.activeElement === cai && [16,17,18,20,27,91].indexOf(hh.state.keyCode)==-1)
+	{
+		// this is done in keydown now
+		document.querySelector('#burger').classList.remove('display');
+	}
+	create_keydown_activity(event);
+	hh.last_keydown_state = hh.state;
+}
+document.body.onkeyup = function(event) { hh_event_properties(event); hh_selection_properties(); }
+
+// can we let gutter objects shine through for right clicks somehow
+document.body.oncontextmenu = function(event) { 
+	if (event.target.closest('#toolbartr') && !hh.testbed) { event.preventDefault(); return; };
+	cancel_pressed_activity(); 
+	set_pressed_in_catd(false); 
+	document.body.classList.add('context_menu');	// this removes svg pointer-events:none 
+}
+
+document.body.ondragstart = function(event) { 
+	cancel_pressed_activity(); 
+	set_pressed_in_catd(false); 
+}
+
+function cancel_pressed_activity()
+{
+	if (hh.pressed_activity) { hh.pressed_activity('cancel'); hh.pressed_activity = null; } 
+}
+	
+// these let you drag and paste images, which is cool, and we'll need to support some storage mitigation
+
+//https://javascript.info/mouse-drag-and-drop
+cai.ondrop = function(event)
+{
+	console.log('drop');
+	var file = event.dataTransfer.files[0];
+	//don't try to mess with non-image files
+	if (file && file.type.match('image.*')) {
+		//then we have an image,
+		event.preventDefault();
+		
+		//we have a file handle, need to read it with file reader!
+		var reader = new FileReader();
+
+		// Closure to capture the file information.
+		reader.onload = (function(theFile) {
+			//get the data uri
+			var dataURI = theFile.target.result;
+			//make a new image element with the dataURI as the source
+			var label = generate_node_from_faux({ tag: 'LABEL', class: 'gutter selected', 'data-image': dataURI });
+			//Insert the image at the carat
+
+			// Try the standards-based way first. This works in FF
+			if (document.caretPositionFromPoint) {
+				var pos = document.caretPositionFromPoint(event.pageX, event.pageY);
+				var range = document.createRange();
+				range.setStart(pos.offsetNode, pos.offset);
+				range.collapse();
+				range.insertNode(label);
+			}
+			// Next, the WebKit way. This works in Chrome.
+			else if (document.caretRangeFromPoint) {
+				range = document.caretRangeFromPoint(event.pageX, event.pageY);
+				range.insertNode(label);
+			}
+			else
+			{
+				//not supporting IE right now.
+				console.log('could not find carat');
+			}
+			range.selectNode(label);
+			window.getSelection().removeAllRanges();
+			window.getSelection().addRange(range);
+
+
+		});
+		//this reads in the file, and the onload event triggers, which adds the image to the div at the carat
+		reader.readAsDataURL(file);
+	}
+}
+
+cai.onpaste = function (event) {
+	var html = event.clipboardData.getData('text/html');
+	if (html)
+	{
+		var test = document.createElement('span');
+		test.innerHTML = /*'<img class="gutter heightone darkfilter selected" src="images.folder/pen.svg" draggable="false">';*/html;
+		test = generate_node_from_faux(generate_faux_from_node(test));
+		//event.clipboardData.setData('text/html',test.innerHTML + "OK!");	// doesn't work safari
+		console.log(test.innerHTML);
+		
+		content_virtual_dom.BeginUndoableMutations();
+		//window.getSelection().collapseToEnd();
+		// no good, plain text picks up the property of the node its in, we want proper paste
+		window.getSelection().getRangeAt(0).deleteContents();
+		window.getSelection().getRangeAt(0).insertNode(test);
+		//window.getSelection().collapseToEnd();
+		//while (test.firstChild)
+			//window.getSelection().getRangeAt(0).insertNode(test.firstChild);
+			window.getSelection().selectAllChildren(test);
+			
+		window.getSelection().collapseToEnd();
+		content_virtual_dom.FinishUndoableMutations(true);
+//		document.execCommand('insertHTML',test.innerHTML);
+		event.preventDefault();
+		return;
+	}
+	var me = this;
+	var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+	var blob = null;
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].type.indexOf("image") === 0) {
+			blob = items[i].getAsFile();
+		}
+	}
+	if (blob !== null) {
+		var reader = new FileReader();
+		reader.onload = function (event) {
+			var image = new Image();
+			image.src = event.target.result;
+			image.onload = function () {
+				var range = window.getSelection().getRangeAt(0);
+				if (range) {
+					range.deleteContents();
+					var label = document.createElement('label');
+					label.className = 'gutter selected';
+					label.appendChild(image);
+					range.insertNode(label);
+					range.selectNode(label);
+					window.getSelection().removeAllRanges();
+					window.getSelection().addRange(range);
+				} else {
+					window.document.body.appendChild(image)
+				}
+			}
+		}
+		reader.readAsDataURL(blob);
+		event.preventDefault();
+	}
+}
+
+// Navigator.clipboard is the new way to drill into the clipboard and seems to be compatible with most stuff
+document.xonpaste = function(event) {
+	// paste seems to support text/html (a lot of html, i think virtualdom can handle it), text/plain, and Files for any graphics
+	// (event.clipboardData || window.clipboardData).getData('text') is supposed to be nonstandard but work everywhere
+	// https://ourcodeworld.com/articles/read/491/how-to-retrieve-images-from-the-clipboard-with-javascript-in-the-browser
+	//if (ca.querySelectorAll('.gutter.selected').length) 
+	{
+		
+		var data = event.clipboardData || window.clipboardData;
+		var desc = data.types.map((t)=>(t+': '+data.getData(t)));
+		console.log(desc, data.items);	// this is for type Files 
+		
+		var vd = new VirtualDOM();
+		vd.node.innerHTML = data.getData('text/html');
+		vd.CopyNodeToFaux();
+		vd.CopyFauxToNode();
+		console.log(vd.faux);
+		//alert(vd.node.innerHTML);
+
+		var items = data.items;
+		for (var i = 0; i < items.length; i++)
+		{
+			// Skip content if not image
+			if (items[i].type.indexOf("image") == -1) continue;
+			// Retrieve image on clipboard as blob
+			var blob = items[i].getAsFile();
+
+			// Create an abstract canvas and get context
+			var mycanvas = document.createElement("canvas");
+			var ctx = mycanvas.getContext('2d');
+			
+			// Create an image
+			var img = new Image(), label = document.createElement('label');
+			label.className = 'gutter right selected';
+			label.prepend(img);
+			cag.prepend(label);
+			
+			// Once the image loads, render the img on the canvas
+			img.onload = function(){
+				// Update dimensions of the canvas with the dimensions of the image
+				mycanvas.width = this.width;
+				mycanvas.height = this.height;
+
+				// Draw the image
+				ctx.drawImage(img, 0, 0);
+
+				// Execute callback with the base64 URI of the image
+				if(typeof(callback) == "function"){
+					callback(mycanvas.toDataURL(
+						(imageFormat || "image/png")
+					));
+				
+				(window.URL || window.webkitURL).revokeObjectURL(blob);	// it's no longer needed
+				console.log(img);
+				}
+			};
+
+			// Creates a DOMString containing a URL representing the object given in the parameter
+			// namely the original Blob. we have to save this somewhere in cache though
+			var src = (window.URL || window.webkitURL).createObjectURL(blob);
+			// we can set img.src to src but let's save as base64...
+			//img.src = src;
+			var fr = new FileReader;
+			fr.onloadend = function() {
+				img.src = fr.result;
+			};
+			fr.readAsDataURL(blob);
+
+			console.log(img.src);
+			//
+		}
+		
+	}
+}
+
+/*
+function retrieveImageFromClipboardAsBase64(pasteEvent, callback, imageFormat){
+	if(pasteEvent.clipboardData == false){
+		if(typeof(callback) == "function"){
+			callback(undefined);
+		}
+	};
+
+	var items = pasteEvent.clipboardData.items;
+
+	if(items == undefined){
+		if(typeof(callback) == "function"){
+			callback(undefined);
+		}
+	};
+
+	for (var i = 0; i < items.length; i++) {
+		// Skip content if not image
+		if (items[i].type.indexOf("image") == -1) continue;
+		// Retrieve image on clipboard as blob
+		var blob = items[i].getAsFile();
+
+		// Create an abstract canvas and get context
+		var mycanvas = document.createElement("canvas");
+		var ctx = mycanvas.getContext('2d');
+		
+		// Create an image
+		var img = new Image();
+
+		// Once the image loads, render the img on the canvas
+		img.onload = function(){
+			// Update dimensions of the canvas with the dimensions of the image
+			mycanvas.width = this.width;
+			mycanvas.height = this.height;
+
+			// Draw the image
+			ctx.drawImage(img, 0, 0);
+
+			// Execute callback with the base64 URI of the image
+			if(typeof(callback) == "function"){
+				callback(mycanvas.toDataURL(
+					(imageFormat || "image/png")
+				));
+			}
+		};
+
+		// Crossbrowser support for URL
+		var URLObj = window.URL || window.webkitURL;
+
+		// Creates a DOMString containing a URL representing the object given in the parameter
+		// namely the original Blob
+		img.src = URLObj.createObjectURL(blob);
+	}
+}
+
+window.addEventListener("paste", function(e){
+
+	// Handle the event
+	retrieveImageFromClipboardAsBase64(e, function(imageDataBase64){
+		// If there's an image, open it in the browser as a new window :)
+		if(imageDataBase64){
+			// data:image/png;base64,iVBORw0KGgoAAAAN......
+			window.open(imageDataBase64);
+		}
+	});
+}, false);*/
+
+
+</script>
+
+</body>
+</html>
